@@ -3,7 +3,7 @@ function App() {
   
 
   return (
-   <h1>Something Big Is About to Happen!</h1>
+   <h1>Something Big Is About to Happen Soon!</h1>
   )
 }
 

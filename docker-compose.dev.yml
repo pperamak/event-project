@@ -1,0 +1,28 @@
+services:
+  frontend:
+    image: event-front-dev
+    build:
+      context: ./event-frontend
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./event-frontend:/usr/src/app
+    container_name: frontend-dev
+  backend:
+    image: event-back-dev
+    build:
+      context: ./event-backend
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./event-backend:/usr/src/app
+    container_name: backend-dev
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: event-dev-proxy
+    depends_on:
+      - frontend # wait for the frontend container to be started
+      - backend
+  
