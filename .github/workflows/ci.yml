@@ -12,7 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        service: [frontend, backend]
+        service: [event-frontend, event-backend]
 
     defaults:
       run:
