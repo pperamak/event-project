@@ -15,11 +15,14 @@
     "start": "node build/index.js"
   },
   "dependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/pg": "^8.15.5",
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "pg": "^8.16.3",
-    "sequelize": "^6.37.7"
+    "sequelize": "^6.37.7",
+    "zod": "^4.0.15"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
