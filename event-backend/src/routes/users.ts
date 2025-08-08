@@ -25,7 +25,7 @@ try{
   const passwordHash = await bcrypt.hash(newUser.password, saltRounds);
   console.log(newUser.name, newUser.email, passwordHash);
   res.send('Creating a user..');
-  //save user
+  //save user -userservice?
   //res.status(201).json(savedUser)
 } catch (error: unknown) {
     let errorMessage = 'Something went wrong.';

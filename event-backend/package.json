@@ -8,15 +8,13 @@
   "main": "index.ts",
   "scripts": {
     "tsc": "tsc",
-    "dev": "ts-node-dev index.ts",
+    "dev": "ts-node-dev src/index.ts",
     "lint": "eslint . --ext .ts,.tsx",
     "type-check": "tsc --noEmit",
     "test": "jest",
     "start": "node build/index.js"
   },
   "dependencies": {
-    "@types/bcrypt": "^6.0.0",
-    "@types/pg": "^8.15.5",
     "bcrypt": "^6.0.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
@@ -30,6 +28,8 @@
     "@types/eslint__js": "^8.42.3",
     "@types/express": "^5.0.3",
     "@types/jest": "^30.0.0",
+    "@types/bcrypt": "^6.0.0",
+    "@types/pg": "^8.15.5",
     "eslint": "^9.32.0",
     "jest": "^30.0.5",
     "ts-jest": "^29.4.1",
