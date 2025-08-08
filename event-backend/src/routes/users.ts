@@ -1,9 +1,11 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
 import { z } from 'zod';
-
+import { newUserInputSchema } from '../schemas/newUserInput.schema';
+import { validateReqBody } from '../middleware/validateReqBody';
+import { NewUserInput } from '../types/newUserInput.type';
 const router = express.Router();
-
+/*
 const newUserSchema = z.object({
   name: z.string(),
   email: z.email(),
@@ -15,15 +17,17 @@ type NewUser = z.infer<typeof newUserSchema>;
 const toNewUser = (object: unknown): NewUser =>{
   return newUserSchema.parse(object);
 };
+*/
 
-router.post('/', async (req, res) =>{
- // const { name, email, password } = req.body;
+router.post('/', validateReqBody(newUserInputSchema), async (req, res) =>{
+ // 
 try{
-  const newUser = toNewUser(req.body);
-  
+  //tämä middlewareen?
+  //const newUser = toNewUser(req.body);
+  const { name, email, password } = req.body as NewUserInput;
   const saltRounds = 10;
-  const passwordHash = await bcrypt.hash(newUser.password, saltRounds);
-  console.log(newUser.name, newUser.email, passwordHash);
+  const passwordHash = await bcrypt.hash(password, saltRounds);
+  console.log(name, email, passwordHash);
   res.send('Creating a user..');
   //save user -userservice?
   //res.status(201).json(savedUser)
