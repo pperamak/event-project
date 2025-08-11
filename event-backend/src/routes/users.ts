@@ -1,9 +1,11 @@
 import express from 'express';
 import bcrypt from 'bcrypt';
-import { z } from 'zod';
+//import { z } from 'zod';NextFunction
+import { Request, Response,  } from 'express';
 import { newUserInputSchema } from '../schemas/newUserInput.schema';
 import { validateReqBody } from '../middleware/validateReqBody';
 import { NewUserInput } from '../types/newUserInput.type';
+import { NewUser } from '../types/newUser.type';
 const router = express.Router();
 /*
 const newUserSchema = z.object({
@@ -18,20 +20,27 @@ const toNewUser = (object: unknown): NewUser =>{
   return newUserSchema.parse(object);
 };
 */
-
-router.post('/', validateReqBody(newUserInputSchema), async (req, res) =>{
+//next: NextFunction
+router.post('/', validateReqBody(newUserInputSchema), async (req: Request<unknown, unknown, NewUserInput>, res: Response<NewUser>, ) =>{
  // 
-try{
+//try{
   //tämä middlewareen?
   //const newUser = toNewUser(req.body);
-  const { name, email, password } = req.body as NewUserInput;
+  const { name, email, password } = req.body;
   const saltRounds = 10;
   const passwordHash = await bcrypt.hash(password, saltRounds);
   console.log(name, email, passwordHash);
-  res.send('Creating a user..');
+  const newUser = {
+    name,
+    email,
+    passwordHash
+  };
+  res.send(newUser);
   //save user -userservice?
   //res.status(201).json(savedUser)
-} catch (error: unknown) {
+//} catch (error: unknown) {
+//    next(error);
+  /*
     let errorMessage = 'Something went wrong.';
     if (error instanceof z.ZodError) {
       res.status(400).send({ error: error.issues });
@@ -42,8 +51,11 @@ try{
     } else {
       res.status(400).send({ error: 'unknown error' });
     }
-  }   
-});
+  */ 
+ } 
+   
+//}
+);
 
 export default router;
 
