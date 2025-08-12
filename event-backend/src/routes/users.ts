@@ -6,6 +6,8 @@ import { newUserInputSchema } from '../schemas/newUserInput.schema';
 import { validateReqBody } from '../middleware/validateReqBody';
 import { NewUserInput } from '../types/newUserInput.type';
 import { NewUser } from '../types/newUser.type';
+//import { User } from '../models';
+import User  from '../models/user';
 const router = express.Router();
 /*
 const newUserSchema = z.object({
@@ -35,6 +37,10 @@ router.post('/', validateReqBody(newUserInputSchema), async (req: Request<unknow
     email,
     passwordHash
   };
+
+   
+  const savedUser = await User.create(newUser);
+  console.log(savedUser);
   res.send(newUser);
   //save user -userservice?
   //res.status(201).json(savedUser)
