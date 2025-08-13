@@ -2,6 +2,7 @@
 import { PORT } from "./util/config";
 import express from 'express';
 import userRouter from './routes/users';
+import loginRouter from './routes/login';
 import { unknownEndpoint } from './middleware/unknownEndpoint';
 import { errorHandler } from './middleware/errorHandler';
 import { connectToDatabase } from "./util/db";
@@ -16,6 +17,7 @@ app.get('/ping', (_req, res) => {
 });
 
 app.use('/users', userRouter);
+app.use('/login', loginRouter);
 app.use(unknownEndpoint);
 app.use(errorHandler);
 

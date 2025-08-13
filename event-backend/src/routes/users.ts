@@ -24,10 +24,7 @@ const toNewUser = (object: unknown): NewUser =>{
 */
 //next: NextFunction
 router.post('/', validateReqBody(newUserInputSchema), async (req: Request<unknown, unknown, NewUserInput>, res: Response<NewUser>, ) =>{
- // 
-//try{
-  //tämä middlewareen?
-  //const newUser = toNewUser(req.body);
+ 
   const { name, email, password } = req.body;
   const saltRounds = 10;
   const passwordHash = await bcrypt.hash(password, saltRounds);
@@ -41,7 +38,7 @@ router.post('/', validateReqBody(newUserInputSchema), async (req: Request<unknow
    
   const savedUser = await User.create(newUser);
   console.log(savedUser);
-  res.send(newUser);
+  return res.send(savedUser.toJSON());
   //save user -userservice?
   //res.status(201).json(savedUser)
 //} catch (error: unknown) {

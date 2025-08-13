@@ -1,7 +1,15 @@
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../util/db";
+import { UserAttributes } from "../types/userAttributes.type";
+import { UserCreationAttributes } from "../types/userCreationAttributes.type";
 
-class User extends Model {}
+class User extends Model<UserAttributes, UserCreationAttributes>
+  implements UserAttributes {
+  public id!: number;
+  public name!: string;
+  public email!: string;
+  public passwordHash!: string;
+}
 User.init({
   id: {
     type: DataTypes.INTEGER,
@@ -14,7 +22,8 @@ User.init({
   },
   email: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    //unique: true
   },
   passwordHash: {
     type: DataTypes.STRING,
