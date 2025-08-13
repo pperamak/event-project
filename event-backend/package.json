@@ -12,7 +12,8 @@
     "lint": "eslint . --ext .ts,.tsx",
     "type-check": "tsc --noEmit",
     "test": "jest",
-    "start": "node build/index.js"
+    "start": "node build/index.js",
+    "migration:down": "node util/rollback.ts"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
