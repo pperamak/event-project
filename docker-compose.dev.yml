@@ -13,7 +13,8 @@ services:
       context: ./event-backend
       dockerfile: dev.Dockerfile
     volumes:
-      - ./event-backend:/usr/src/app
+      - ./event-backend/src:/usr/src/app/src
+      - /usr/src/app/node_modules
     container_name: backend-dev
     depends_on:
       - postgres
