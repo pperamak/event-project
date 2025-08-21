@@ -6,6 +6,11 @@ export const typeDefs=gql`
     email: String!
     id: ID!
   }
+
+  type Token{
+    value: String!
+    user: User!
+  }
   
   type Query {
     allUsers: [User!]!
@@ -17,6 +22,11 @@ export const typeDefs=gql`
       email: String!
       password: String!
     ): User!
+
+    login(
+      email: String!
+      password: String!
+    ): Token!
   }
 `;
 

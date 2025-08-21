@@ -9,7 +9,14 @@ class User extends Model<UserAttributes, UserCreationAttributes>
   public name!: string;
   public email!: string;
   public passwordHash!: string;
-}
+
+
+public toSafeJSON() {
+    const { passwordHash, ...safeUser } = this.toJSON();
+    return safeUser;
+  }
+};
+
 User.init({
   id: {
     type: DataTypes.INTEGER,

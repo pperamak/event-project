@@ -1,11 +1,21 @@
 import User  from '../models/user';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { SECRET } from '../util/config';
+import { GraphQLError } from 'graphql';
 
 interface CreateUserArgs {
   name: string;
   email: string;
   password: string;
 }
+
+interface LoginArgs {
+  email: string;
+  password: string
+}
+
+
 
 const resolvers = {
   Query: {
@@ -26,30 +36,33 @@ const resolvers = {
         };
       const savedUser = await User.create(newUser);
 
-      // hide passwordHash before returning
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { passwordHash: _, ...safeUser } = savedUser.toJSON();
-
-      return safeUser;
+      return savedUser.toSafeJSON();
       
+    },
+    login: async (_root: unknown, args: LoginArgs) => {
+      const { email, password } = args;
+      const user = await User.findOne({ where: { email } });
+     
+      if (!(user && (await bcrypt.compare(password, user.passwordHash)))) {
+        throw new GraphQLError('wrong credentials', {
+        extensions: {
+          code: 'BAD_USER_INPUT'
+        }
+      });
+      }
+      const userForToken = {
+        email: user.email,
+        id: user.id
+      };
+
+      const token = jwt.sign(userForToken, SECRET);
+      return { 
+        value: token,
+        user: user.toSafeJSON() 
+      };
     }
   }
 };
-/*
-const { name, email, password } = req.body;
-  const saltRounds = 10;
-  const passwordHash = await bcrypt.hash(password, saltRounds);
-  console.log(name, email, passwordHash);
-  const newUser = {
-    name,
-    email,
-    passwordHash
-  };
 
-   
-  const savedUser = await User.create(newUser);
-  console.log(savedUser);
-  return res.send(savedUser.toJSON());
-  */
 
 export default resolvers;
