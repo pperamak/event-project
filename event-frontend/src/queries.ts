@@ -13,8 +13,19 @@ export const CREATE_USER = gql`
     }
   }
 `;
-/*
+
 export const LOGIN_USER = gql`
-  mutation
-`
-*/
+  mutation loginUser($email: String!, $password: String!){
+    login(
+      email: $email,
+      password: $password
+    ){
+      value
+      user{
+        name
+        email
+        id
+      }
+    }
+  }
+`;

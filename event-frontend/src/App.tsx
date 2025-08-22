@@ -1,5 +1,6 @@
 import { gql, useQuery } from '@apollo/client';
 import Register from './components/Register';
+import Login from './components/Login';
 
 const ALL_USERS = gql`
   query{
@@ -21,7 +22,8 @@ const App = () => {
   return (
   <div>
     <h1>Something Big Is About to Happen Soon!</h1>
-    <Register/>      
+    <Register/>
+    <Login/>     
   </div>
   );
 };
