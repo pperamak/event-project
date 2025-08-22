@@ -13,12 +13,13 @@ const ALL_USERS = gql`
 `;
 
 const App = () => {
+  /*
   const result = useQuery(ALL_USERS);
   if (result.loading) {
     return <div>loading...</div>;
   }
   console.log(result.data.allUsers);
-
+  */
   return (
   <div>
     <h1>Something Big Is About to Happen Soon!</h1>
