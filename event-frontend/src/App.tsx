@@ -1,7 +1,8 @@
-import { gql, useQuery } from '@apollo/client';
+//import { gql, useQuery } from '@apollo/client';
 import Register from './components/Register';
 import Login from './components/Login';
 
+/*
 const ALL_USERS = gql`
   query{
     allUsers {
@@ -11,6 +12,7 @@ const ALL_USERS = gql`
     }
   }
 `;
+*/
 
 const App = () => {
   /*
