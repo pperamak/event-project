@@ -1,23 +1,25 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import stylistic from "@stylistic/eslint-plugin";
+import vitest from 'eslint-plugin-vitest';
 
 export default tseslint.config({
   files: ['**/*.ts'],
   extends: [
     eslint.configs.recommended,
     ...tseslint.configs.recommendedTypeChecked,
+    vitest.configs.recommended,
   ],
   languageOptions: {
     parserOptions: {
-      project: true,
+      project: ['./tsconfig.src.json', './tsconfig.test.json'],
       tsconfigRootDir: import.meta.dirname,
     },
   },
   plugins: {
     "@stylistic": stylistic,
   },
-  ignores: ["build/*"],
+  ignores: ["build/*", "vitest.config.ts"],
   rules: {
     '@stylistic/semi': 'error',
     '@typescript-eslint/no-unsafe-assignment': 'error',
@@ -26,6 +28,9 @@ export default tseslint.config({
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/restrict-template-expressions': 'off',
     '@typescript-eslint/restrict-plus-operands': 'off',
+    '@typescript-eslint/no-unsafe-call': 'error',
+    '@typescript-eslint/no-unsafe-member-access': 'error',
+    '@typescript-eslint/no-unsafe-return': 'error',
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
@@ -39,4 +44,19 @@ export default tseslint.config({
       }
     ],
   },
-});
+},
+    // Disable strict type rules in tests
+    {
+      files: ['src/tests/**/*.ts', '**/*.test.ts', '**/*.spec.ts'],
+      rules: {
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
+        '@typescript-eslint/no-unsafe-argument': 'off'
+      },
+    }
+  
+
+);

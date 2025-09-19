@@ -1,6 +1,8 @@
-import { DataTypes, QueryInterface } from "sequelize";
+import { DataTypes } from "sequelize";
+import { Migration } from "../types/migration.js";
 
-export const up = async ({ context : queryInterface}: { context: QueryInterface }) =>{
+
+export const up: Migration["up"] = async (queryInterface, Sequelize) =>{
   await queryInterface.createTable('users',{
     id: {
     type: DataTypes.INTEGER,
@@ -21,15 +23,17 @@ export const up = async ({ context : queryInterface}: { context: QueryInterface 
   },
   created_at:{
     type: DataTypes.DATE,
-    allowNull: false
+    allowNull: false,
+    defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
   },
   updated_at: {
     type: DataTypes.DATE,
-    allowNull: false
+    allowNull: false,
+    defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
   },
   });
 };
 
-export const down = async ({ context: queryInterface }: { context: QueryInterface }) => {
+export const down: Migration["down"] = async (queryInterface, _Sequelize) => {
   await queryInterface.dropTable('users');
 };

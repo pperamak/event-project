@@ -1,18 +1,18 @@
 import { Model, DataTypes } from "sequelize";
-import { sequelize } from "../util/db";
-import { UserAttributes } from "../types/userAttributes.type";
-import { UserCreationAttributes } from "../types/userCreationAttributes.type";
+import { sequelize } from "../util/db.js";
+import { UserAttributes } from "../types/userAttributes.type.js";
+import { UserCreationAttributes } from "../types/userCreationAttributes.type.js";
 
 class User extends Model<UserAttributes, UserCreationAttributes>
   implements UserAttributes {
-  public id!: number;
-  public name!: string;
-  public email!: string;
-  public passwordHash!: string;
+  declare id: number;
+  declare name: string;
+  declare email: string;
+  declare passwordHash: string;
 
 
 public toSafeJSON() {
-    const { passwordHash, ...safeUser } = this.toJSON();
+    const { passwordHash: _passwordHash, ...safeUser } = this.toJSON();
     return safeUser;
   }
 };
@@ -34,7 +34,8 @@ User.init({
   },
   passwordHash: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    field: 'password_hash'
   }
 },{
   sequelize,

@@ -18,6 +18,22 @@ jobs:
       run:
         working-directory: ${{ matrix.service }}
 
+    services:
+      # Only spin up Postgres if backend is running
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: mysecretpassword
+          POSTGRES_DB: testdb
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - uses: actions/checkout@v4
 
@@ -26,12 +42,20 @@ jobs:
           node-version: 20
 
       - run: npm ci
-      
+
       - name: Lint
         run: npm run lint
 
       - name: Type check
         run: npm run type-check
 
-      - name: Unit tests
+      - name: Run migrations (backend only)
+        if: matrix.service == 'event-backend'
+        run: npm run migration:up
+        env:
+          DATABASE_URL: postgres://postgres:mysecretpassword@localhost:5432/testdb
+
+      - name: Run tests
         run: npm test
+        env:
+          DATABASE_URL: ${{ matrix.service == 'event-backend' && 'postgres://postgres:mysecretpassword@localhost:5432/testdb' || '' }}
