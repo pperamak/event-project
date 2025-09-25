@@ -23,6 +23,7 @@ interface LoginUserVars {
 
 const Login = () => {
   const [serverError, setServerError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const {
     register,
@@ -43,7 +44,7 @@ const Login = () => {
 
       if (result.data?.login) {
         console.log("Logged in user:", result.data.login.user.name);
-        alert(`Welcome ${result.data.login.user.name} 👋`);
+        setSuccessMessage(`Welcome ${result.data.login.user.name} 👋`);
         reset(); // clear form after success
       }
     } catch (e) {
@@ -63,8 +64,9 @@ const Login = () => {
       className="space-y-4 max-w-sm mx-auto"
     >
       <div>
-        <label className="block">Email</label>
+        <label htmlFor="email" className="block">Email</label>
         <input
+          id="email"
           type="email"
           {...register("email")}
           className="border p-2 w-full"
@@ -75,8 +77,9 @@ const Login = () => {
       </div>
 
       <div>
-        <label className="block">Password</label>
+        <label htmlFor="password" className="block">Password</label>
         <input
+          id="password"
           type="password"
           {...register("password")}
           className="border p-2 w-full"
@@ -87,7 +90,7 @@ const Login = () => {
       </div>
 
       {serverError && <p className="text-red-500">{serverError}</p>}
-
+      {successMessage && <p className="text-green-500">{successMessage}</p>}
       <button
         type="submit"
         disabled={isSubmitting}
