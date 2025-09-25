@@ -22,6 +22,7 @@ interface CreateUserVars {
 }
 const Register = () =>{
   const [serverError, setServerError]=useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const {
     register,
@@ -47,7 +48,7 @@ const Register = () =>{
       throw new Error("No data returned");
     }
     
-    alert("Registration successful ✅");
+    setSuccessMessage("Registration successful ✅");
     console.log("Created user:", result.data.createUser);
     reset();
   } catch (e) {
@@ -72,33 +73,33 @@ const Register = () =>{
   return (
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-sm mx-auto">
       <div>
-        <label className="block">Name</label>
-        <input {...register("name")} className="border p-2 w-full" />
+        <label htmlFor="name" className="block">Name</label>
+        <input id="name" {...register("name")} className="border p-2 w-full" />
         {errors.name && <p className="text-red-500">{errors.name.message}</p>}
       </div>
 
       <div>
-        <label className="block">Email</label>
-        <input {...register("email")} type="email" className="border p-2 w-full" />
+        <label htmlFor="email" className="block">Email</label>
+        <input id="email" {...register("email")} type="email" className="border p-2 w-full" />
         {errors.email && <p className="text-red-500">{errors.email.message}</p>}
       </div>
 
       <div>
-        <label className="block">Password</label>
-        <input {...register("password")} type="password" className="border p-2 w-full" />
+        <label htmlFor="password" className="block">Password</label>
+        <input id="password" {...register("password")} type="password" className="border p-2 w-full" />
         {errors.password && <p className="text-red-500">{errors.password.message}</p>}
       </div>
 
       <div>
-        <label className="block">Confirm Password</label>
-        <input {...register("confirmPassword")} type="password" className="border p-2 w-full" />
+        <label htmlFor="confirmPassword" className="block">Confirm Password</label>
+        <input id="confirmPassword" {...register("confirmPassword")} type="password" className="border p-2 w-full" />
         {errors.confirmPassword && (
           <p className="text-red-500">{errors.confirmPassword.message}</p>
         )}
       </div>
 
       {serverError && <p className="text-red-500">{serverError}</p>}
-
+      {successMessage && <p className="text-green-500">{successMessage}</p>}
       <button
         type="submit"
         disabled={isSubmitting}
