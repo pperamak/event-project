@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { CREATE_USER } from "../queries";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerSchema } from "../validation/registerSchema";
+import { type RegisterSchema } from "../validation/registerSchema";
+import { ApolloError } from "@apollo/client";
 
-const Register = () =>{
-  const [name, setName]=useState('');
-  const [email, setEmail]=useState('');
-  const [password, setPassword]=useState('');
-
-  interface CreateUserData {
+interface CreateUserData {
   createUser: {
     id: string;
     name: string;
@@ -20,61 +20,95 @@ interface CreateUserVars {
   email: string;
   password: string;
 }
+const Register = () =>{
+  const [serverError, setServerError]=useState<string | null>(null);
 
-  const [createUser, { data, loading, error }] = useMutation<CreateUserData, CreateUserVars>(CREATE_USER);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<RegisterSchema>({
+    resolver: zodResolver(registerSchema),
+    mode: "onBlur", // validate on blur (instant feedback)
+  });
 
-  const submit = async (event: React.SyntheticEvent) =>{
-    event.preventDefault();
+  
+
+  const [createUser] = useMutation<CreateUserData, CreateUserVars>(CREATE_USER);
+
+  const onSubmit = async (data: RegisterSchema) =>{
+    setServerError(null);
     try {
+      const { name, email, password } =data;
     const result = await createUser({ variables: { name, email, password } });
-    console.log("Created user:", result.data?.createUser);
+    
+    if (!result.data){
+      throw new Error("No data returned");
+    }
+    
+    alert("Registration successful ✅");
+    console.log("Created user:", result.data.createUser);
+    reset();
   } catch (e) {
-    // onError is still useful, but you can also catch here
-    console.error("Registration failed", e);
+  if (e instanceof ApolloError) {
+    if (e.graphQLErrors.length > 0) {
+      setServerError(e.graphQLErrors[0].message);
+    } else if (e.networkError) {
+      setServerError("Network error. Please try again.");
+    } else {
+      setServerError(e.message);
+    }
+  } else if (e instanceof Error) {
+    // fallback for generic errors
+    setServerError(e.message);
+  } else {
+    setServerError("Unknown error occurred");
   }
-  setName('');
-  setEmail('');
-  setPassword('');
+}
+
   };
   
   return (
-      
-    <div>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 max-w-sm mx-auto">
       <div>
-       {loading && <p>Registering user...</p>}
-        {error && <p style={{color: "red"}}>{error.message}</p>}
-        {data && <p>Welcome {data.createUser.name}!</p>}  
+        <label className="block">Name</label>
+        <input {...register("name")} className="border p-2 w-full" />
+        {errors.name && <p className="text-red-500">{errors.name.message}</p>}
       </div>
-      <form onSubmit={submit}>
-        <div>
-          name
-          <input
-          value={name}
-          onChange={({target}) =>setName(target.value)}
-          />
-        </div>
-        <div>
-          email
-          <input
-          value={email}
-          onChange={({target}) =>setEmail(target.value)}
-          />
-        </div>
-        <div>
-           password 
-           <input
-          type="password"
-          value={password}
-          onChange={({ target }) => setPassword(target.value)}
-          />
-         </div>
-         <button onClick={submit} type="button">
-            register
-          </button>
-      </form>
 
-    </div>
+      <div>
+        <label className="block">Email</label>
+        <input {...register("email")} type="email" className="border p-2 w-full" />
+        {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+      </div>
+
+      <div>
+        <label className="block">Password</label>
+        <input {...register("password")} type="password" className="border p-2 w-full" />
+        {errors.password && <p className="text-red-500">{errors.password.message}</p>}
+      </div>
+
+      <div>
+        <label className="block">Confirm Password</label>
+        <input {...register("confirmPassword")} type="password" className="border p-2 w-full" />
+        {errors.confirmPassword && (
+          <p className="text-red-500">{errors.confirmPassword.message}</p>
+        )}
+      </div>
+
+      {serverError && <p className="text-red-500">{serverError}</p>}
+
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        {isSubmitting ? "Registering..." : "Register"}
+      </button>
+    </form>
   );
+    
 };
 
 export default Register;
