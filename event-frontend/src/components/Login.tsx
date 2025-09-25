@@ -66,6 +66,7 @@ const Login = () => {
       <div>
         <label htmlFor="email" className="block">Email</label>
         <input
+          data-testid="login-email"
           id="email"
           type="email"
           {...register("email")}
@@ -79,6 +80,7 @@ const Login = () => {
       <div>
         <label htmlFor="password" className="block">Password</label>
         <input
+          data-testid="login-password"
           id="password"
           type="password"
           {...register("password")}
