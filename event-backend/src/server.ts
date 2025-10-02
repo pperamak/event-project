@@ -11,6 +11,16 @@ import { errorHandler } from './middleware/errorHandler.js';
 import { connectToDatabase } from './util/db.js';
 import { typeDefs } from "./graphql/typeDefs.js";
 import resolvers from "./graphql/resolvers.js";
+import jwt from "jsonwebtoken";
+import { SECRET } from './util/config.js';
+import User from './models/user.js';
+import { JwtPayload } from 'jsonwebtoken';
+import { MyContext } from './types/context.type.js';
+
+interface JwtPayloadWithId extends JwtPayload {
+  id: number;
+  email: string;
+}
 
 export async function createServer() {
   const app = express();
@@ -18,7 +28,7 @@ export async function createServer() {
 
   await connectToDatabase();
 
-  const server = new ApolloServer({
+  const server = new ApolloServer<MyContext>({
     schema: makeExecutableSchema({ typeDefs, resolvers }),
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     formatError: formatGraphQLError
@@ -30,7 +40,21 @@ export async function createServer() {
     '/graphql',
     cors(),
     express.json(),
-    expressMiddleware(server, { }),
+    expressMiddleware(server, {
+      context: async ({ req }): Promise<MyContext> =>{
+        const auth = req ? req.headers.authorization : null;
+        if (auth && auth.startsWith('Bearer ')){
+          try {
+            const decodedToken = jwt.verify(auth.substring(7), SECRET) as JwtPayloadWithId;
+            const currentUser = await User.findByPk(decodedToken.id);
+            return { currentUser };
+          }catch (err){
+            console.error("JWT error:", err);
+          }
+        }
+        return { currentUser: null};
+      }
+     }),
   );
 
   app.use(unknownEndpoint);

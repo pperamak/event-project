@@ -12,9 +12,19 @@ export const typeDefs=gql`
     user: User!
   }
   
+  type Event{
+    id: ID!
+    name: String!
+    time: String!
+    description: String!
+    user: User!
+  }
+  
   type Query {
     allUsers: [User!]!
+    me: User
   }
+  
 
   type Mutation {
     createUser(
@@ -22,6 +32,12 @@ export const typeDefs=gql`
       email: String!
       password: String!
     ): User!
+
+    createEvent(
+      name: String!
+      time: String!
+      description: String!
+    ): Event!
 
     login(
       email: String!
