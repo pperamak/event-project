@@ -16,6 +16,7 @@ import { SECRET } from './util/config.js';
 import User from './models/user.js';
 import { JwtPayload } from 'jsonwebtoken';
 import { MyContext } from './types/context.type.js';
+import { GraphQLError } from 'graphql';
 
 interface JwtPayloadWithId extends JwtPayload {
   id: number;
@@ -48,8 +49,10 @@ export async function createServer() {
             const decodedToken = jwt.verify(auth.substring(7), SECRET) as JwtPayloadWithId;
             const currentUser = await User.findByPk(decodedToken.id);
             return { currentUser };
-          }catch (err){
-            console.error("JWT error:", err);
+          }catch (_err){
+             throw new GraphQLError("Invalid token", {
+                extensions: { code: "UNAUTHENTICATED" },
+            });           
           }
         }
         return { currentUser: null};
