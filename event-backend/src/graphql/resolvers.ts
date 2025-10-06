@@ -5,9 +5,10 @@ import { SECRET } from '../util/config.js';
 //import { UserAttributes } from '../types/userAttributes.type.js';
 import { GraphQLError } from 'graphql';
 import { handleSequelizeErrors } from '../util/handleSequelizeErrors.js';
-import { MyContext } from '../types/context.type.js';
+import { ContextUser, MyContext } from '../types/context.type.js';
 import { EventArgs } from '../types/eventArgs.type.js';
 import { createEventInputSchema } from '../schemas/event.input.schema.js';
+//import { EventAttributes } from '../types/eventAttributes.type.js';
 
 interface CreateUserArgs {
   name: string;
@@ -101,7 +102,14 @@ const resolvers = {
 
       const userId = context.currentUser.id;
 
-      return handleSequelizeErrors(async () => {
+      return handleSequelizeErrors<{
+        id?: number;
+        name: string;
+        time: string;
+        description: string;
+        userId: number;
+        user: ContextUser | null;
+      }>(async () => {
         const newEvent = await Event.create({
           name,
           time,
@@ -109,10 +117,18 @@ const resolvers = {
           userId
         });
 
+        const data = newEvent.toJSON() as {
+          id: number;
+          name: string;
+          time: Date;
+          description: string;
+          userId: number;
+          
+        };
         
         return {
-        ...newEvent.toJSON(),
-        time: newEvent.time.toISOString(),
+        ...data,
+        time: data.time instanceof Date ? data.time.toISOString() : String(data.time),
         user: context.currentUser
         };
   });

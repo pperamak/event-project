@@ -9,12 +9,13 @@ import {
  * Wraps a function that might throw Sequelize errors
  * and rethrows them as GraphQL-friendly errors.
  */
-export const handleSequelizeErrors = async <T>(
+export async function handleSequelizeErrors<T>(
   fn: () => Promise<T>
-): Promise<T> => {
+): Promise<T> {
   try {
     return await fn();
   } catch (err) {
+    
     if (err instanceof UniqueConstraintError) {
       throw new GraphQLError("Email must be unique", {
         extensions: { code: "BAD_USER_INPUT" },

@@ -10,7 +10,12 @@ class Event extends Model<EventAttributes, EventCreationAttributes>
     declare time: Date;
     declare description: string;
     declare userId: number;
+
+    toJSON(): EventAttributes {
+      return { id: this.id, name: this.name, time: this.time, description: this.description, userId: this.userId };
+    }
   }
+
 
 Event.init({
   id:{
