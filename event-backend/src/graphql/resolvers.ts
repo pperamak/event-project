@@ -1,4 +1,4 @@
-import User  from '../models/user.js';
+import { User, Event }  from '../models/index.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { SECRET } from '../util/config.js';
@@ -6,6 +6,8 @@ import { SECRET } from '../util/config.js';
 import { GraphQLError } from 'graphql';
 import { handleSequelizeErrors } from '../util/handleSequelizeErrors.js';
 import { MyContext } from '../types/context.type.js';
+import { EventArgs } from '../types/eventArgs.type.js';
+import { createEventInputSchema } from '../schemas/event.input.schema.js';
 
 interface CreateUserArgs {
   name: string;
@@ -72,8 +74,50 @@ const resolvers = {
         value: token,
         user: user.toSafeJSON() 
       };
-    }
-  }
+    },
+
+    createEvent: async (_root: unknown, args: EventArgs, context: MyContext)=>
+    {  
+      console.log("Args received:", args);
+      console.log("CurrentUser:", context.currentUser);
+    if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      // 🔹 Validate args with Zod
+      const parsed = createEventInputSchema.safeParse(args);
+      if (!parsed.success) {
+        throw new GraphQLError("Invalid input", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            errors: parsed.error.issues, // forward zod details
+          },
+        });
+      }
+
+      const { name, time, description } = parsed.data;
+
+      const userId = context.currentUser.id;
+
+      return handleSequelizeErrors(async () => {
+        const newEvent = await Event.create({
+          name,
+          time,
+          description,
+          userId
+        });
+
+        
+        return {
+        ...newEvent.toJSON(),
+        time: newEvent.time.toISOString(),
+        user: context.currentUser
+        };
+  });
+    },
+  },
 };
 
 

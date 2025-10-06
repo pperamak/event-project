@@ -2,6 +2,7 @@ import { GraphQLError } from "graphql";
 import {
   UniqueConstraintError,
   ValidationError as SequelizeValidationError,
+  ForeignKeyConstraintError
 } from "sequelize";
 
 /**
@@ -26,6 +27,17 @@ export const handleSequelizeErrors = async <T>(
       });
     }
 
-    throw err; // let unknown errors bubble up
+    if (err instanceof ForeignKeyConstraintError) {
+      throw new GraphQLError("Invalid foreign key reference", {
+        extensions: { code: "BAD_USER_INPUT" },
+      });
+    }
+
+    // Fall back: unexpected errors
+    throw new GraphQLError("Internal server error", {
+      extensions: { code: "INTERNAL_SERVER_ERROR" },
+    });
+
+    
   }
 };

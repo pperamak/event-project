@@ -13,7 +13,7 @@ import { typeDefs } from "./graphql/typeDefs.js";
 import resolvers from "./graphql/resolvers.js";
 import jwt from "jsonwebtoken";
 import { SECRET } from './util/config.js';
-import User from './models/user.js';
+import { User } from './models/index.js';
 import { JwtPayload } from 'jsonwebtoken';
 import { MyContext } from './types/context.type.js';
 import { GraphQLError } from 'graphql';

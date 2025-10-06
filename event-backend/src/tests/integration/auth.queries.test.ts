@@ -2,7 +2,7 @@ import { beforeAll, afterAll, beforeEach, describe, expect, test } from "vitest"
 import request from "supertest";
 import bcrypt from "bcrypt";
 import { createServer } from "../../server.js";
-import User from "../../models/user.js";
+import { User } from "../../models/index.js";
 import { sequelize } from "../../util/db.js";
 import type { Express } from "express";
 

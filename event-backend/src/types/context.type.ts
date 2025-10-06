@@ -1,5 +1,9 @@
-import { UserAttributes } from "./userAttributes.type.js";
+export interface ContextUser {
+  id: number;
+  name: string;
+  email: string;
+}
 
 export interface MyContext {
-  currentUser: UserAttributes | null;
+  currentUser: ContextUser | null;
 }

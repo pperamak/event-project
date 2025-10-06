@@ -1,7 +1,7 @@
 import { beforeAll, afterAll, beforeEach, describe, expect, test } from "vitest";
 import bcrypt from "bcrypt";
 import { sequelize } from "../../util/db.js";
-import User from "../user.js";
+import { User } from "../index.js";
 import { UniqueConstraintError } from "sequelize";
 
 describe("User model", () => {

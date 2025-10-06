@@ -1,6 +1,7 @@
 import { GraphQLError, GraphQLFormattedError } from "graphql";
 import { UniqueConstraintError, ValidationError as SequelizeValidationError } from "sequelize";
-import { JsonWebTokenError, TokenExpiredError, NotBeforeError } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+const { JsonWebTokenError, TokenExpiredError, NotBeforeError } = jwt;
 
 export const formatGraphQLError = (
   formattedError: GraphQLFormattedError,

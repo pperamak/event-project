@@ -42,4 +42,4 @@ Event.init({
   modelName: 'event'
 });
 
-
+export default Event;
