@@ -8,6 +8,7 @@ import { handleSequelizeErrors } from '../util/handleSequelizeErrors.js';
 import { ContextUser, MyContext } from '../types/context.type.js';
 import { EventArgs } from '../types/eventArgs.type.js';
 import { createEventInputSchema } from '../schemas/event.input.schema.js';
+//import { eventToResponseFormat } from '../util/eventToResponse.js';
 //import { EventAttributes } from '../types/eventAttributes.type.js';
 
 interface CreateUserArgs {
@@ -28,13 +29,25 @@ const resolvers = {
   Query: {
     allUsers: async () => {
      const users = await User.findAll();
-     return users.map((user) => user.toJSON());;
+     return users.map((user) => user.toJSON());
     },
     me: (_root: unknown, _args: unknown, context: MyContext) =>{
       if (!context.currentUser){
         throw new Error("Not authenticated");
       }
       return context.currentUser;
+    },
+    allEvents: async () => {
+      const events = await Event.findAll({
+        include: {
+          model: User,
+          attributes: ['name', 'email', 'id'],
+          },
+        raw: false,
+        nest: true
+      });
+      return events.map(e => e.toJSON());
+      
     }
   },
   Mutation: {
@@ -79,8 +92,7 @@ const resolvers = {
 
     createEvent: async (_root: unknown, args: EventArgs, context: MyContext)=>
     {  
-      console.log("Args received:", args);
-      console.log("CurrentUser:", context.currentUser);
+      
     if (!context.currentUser) {
         throw new GraphQLError("Not authenticated", {
           extensions: { code: "UNAUTHENTICATED" },
@@ -117,7 +129,7 @@ const resolvers = {
           userId
         });
 
-        const data = newEvent.toJSON() as {
+        const data = newEvent.toJSON.bind(newEvent)() as {
           id: number;
           name: string;
           time: Date;
@@ -125,6 +137,8 @@ const resolvers = {
           userId: number;
           
         };
+        
+        
         
         return {
         ...data,
