@@ -42,7 +42,7 @@ const Register = () =>{
     setServerError(null);
     try {
       const { name, email, password } =data;
-    const result = await createUser({ variables: { name, email, password } });
+      const result = await createUser({ variables: { name, email, password } });
     
     if (!result.data){
       throw new Error("No data returned");

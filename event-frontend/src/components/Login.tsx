@@ -45,6 +45,7 @@ const Login = () => {
       if (result.data?.login) {
         console.log("Logged in user:", result.data.login.user.name);
         setSuccessMessage(`Welcome ${result.data.login.user.name} 👋`);
+        localStorage.setItem('events-user-token', result.data.login.value);
         reset(); // clear form after success
       }
     } catch (e) {

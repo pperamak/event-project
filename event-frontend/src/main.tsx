@@ -4,12 +4,24 @@ import {
    ApolloClient,
    ApolloProvider,
    InMemoryCache,
-   createHttpLink
+   createHttpLink,
+   from,
 } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
 
 const httpLink = createHttpLink({
   uri: "/api/graphql",
+});
+
+const authLink = setContext((_: unknown, { headers }: { headers?: Record<string, string>}) => {
+  const token = localStorage.getItem("events-user-token");
+  return {
+    headers: {
+      ...(headers ?? {}),
+      authorization: token ? `Bearer ${token}` : "",
+    },
+  };
 });
 
 const errorLink = onError(({ graphQLErrors, networkError }) => {
@@ -25,8 +37,10 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
   }
 });
 
+const link = from([errorLink, authLink, httpLink]);
+
 const client = new ApolloClient({
-   link: errorLink.concat(httpLink),
+   link: link,
    cache: new InMemoryCache(),
 });
 
