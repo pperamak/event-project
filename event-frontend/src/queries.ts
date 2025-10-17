@@ -49,3 +49,19 @@ export const CREATE_EVENT = gql`
     }
   }
 `;
+
+export const GET_EVENTS = gql`
+  query getEvents{
+    allEvents{
+      id
+      name
+      time
+      description
+      user{
+        name
+        email
+        id
+      }
+    }
+  }
+`;

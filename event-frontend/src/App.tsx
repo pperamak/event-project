@@ -2,6 +2,7 @@
 import Register from './components/Register';
 import Login from './components/Login';
 import AddEvent from './components/AddEvent';
+import EventList from './components/EventList';
 
 /*
 const ALL_USERS = gql`
@@ -28,7 +29,8 @@ const App = () => {
     <h1>Something Big Is About to Happen Soon!</h1>
     <Register/>
     <Login/>
-    <AddEvent/>     
+    <AddEvent/> 
+    <EventList/>    
   </div>
   );
 };
