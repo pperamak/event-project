@@ -3,6 +3,7 @@ import { useMutation, ApolloError } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LOGIN_USER } from "../queries";
+import { useNavigate } from "react-router";
 import { loginSchema, type LoginSchema } from "../validation/loginSchema";
 
 interface LoginUserData {
@@ -21,10 +22,14 @@ interface LoginUserVars {
   password: string;
 }
 
-const Login = () => {
+type LoginProps = {
+  onLogin: (token: string, name: string) => void;
+};
+
+const Login: React.FC<LoginProps> = ( {onLogin}) =>{
   const [serverError, setServerError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-
+  //const onLogin=props.onLogin;
   const {
     register,
     handleSubmit,
@@ -37,6 +42,8 @@ const Login = () => {
 
   const [loginUser] = useMutation<LoginUserData, LoginUserVars>(LOGIN_USER);
 
+  const navigate = useNavigate();
+
   const onSubmit = async (data: LoginSchema) => {
     setServerError(null);
     try {
@@ -45,8 +52,10 @@ const Login = () => {
       if (result.data?.login) {
         console.log("Logged in user:", result.data.login.user.name);
         setSuccessMessage(`Welcome ${result.data.login.user.name} 👋`);
-        localStorage.setItem('events-user-token', result.data.login.value);
+        //localStorage.setItem('events-user-token', result.data.login.value);
+        onLogin(result.data.login.value,  result.data.login.user.name);
         reset(); // clear form after success
+        navigate("/events");
       }
     } catch (e) {
       if (e instanceof ApolloError) {

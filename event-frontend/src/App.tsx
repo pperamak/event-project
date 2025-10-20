@@ -1,37 +1,36 @@
-//import { gql, useQuery } from '@apollo/client';
 import Register from './components/Register';
 import Login from './components/Login';
 import AddEvent from './components/AddEvent';
 import EventList from './components/EventList';
+import EventsLayout from './components/EventsLayout';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
+import { useAuth } from "./util/useAuth";
 
-/*
-const ALL_USERS = gql`
-  query{
-    allUsers {
-      name
-      email
-      id
-    }
-  }
-`;
-*/
+
 
 const App = () => {
-  /*
-  const result = useQuery(ALL_USERS);
-  if (result.loading) {
-    return <div>loading...</div>;
-  }
-  console.log(result.data.allUsers);
-  */
+ const { user, login } = useAuth();
   return (
-  <div>
-    <h1>Something Big Is About to Happen Soon!</h1>
-    <Register/>
-    <Login/>
-    <AddEvent/> 
-    <EventList/>    
-  </div>
+    <BrowserRouter>
+      <Routes>
+        {!user ? (
+          <>
+            <Route path="/login" element={<Login onLogin={login}/>} />
+            <Route path="/register" element={<Register/>} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </>
+          ) :(
+            <>
+              <Route path="/events" element={<EventsLayout />}>
+                <Route index element={<EventList />} />
+                <Route path="new" element={<AddEvent />} />
+              </Route>
+              <Route path="*" element={<Navigate to="/events" replace />} />
+            </>
+          )}
+      </Routes>
+    </BrowserRouter>
+   
   );
 };
 
