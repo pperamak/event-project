@@ -1,5 +1,6 @@
 import { GET_EVENTS } from "../queries";
 import { useQuery } from "@apollo/client";
+import { Link } from "react-router";
 
 interface EventUser {
   id: string;
@@ -34,7 +35,8 @@ const EventList = () => {
 
   return (
     <ul>
-     {events.map(event =><li key={event.id}>{event.name}</li> )} 
+     {events.map(event =><li key={event.id}>
+      <Link to={`/events/${event.id}`}>{event.name}</Link></li> )} 
     </ul>
     
   );

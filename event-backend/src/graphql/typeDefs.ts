@@ -24,6 +24,7 @@ export const typeDefs=gql`
     allUsers: [User!]!
     me: User
     allEvents: [Event!]!
+    findEvent(id: ID!): Event
   }
   
 

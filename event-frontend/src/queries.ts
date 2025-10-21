@@ -65,3 +65,19 @@ export const GET_EVENTS = gql`
     }
   }
 `;
+
+export const GET_EVENT_BY_ID = gql`
+  query getEvent($id: ID!) {
+  findEvent(id: $id) {
+    id
+    name
+    time
+    description
+    user{
+        name
+        email
+        id
+      }
+  }
+}
+`;

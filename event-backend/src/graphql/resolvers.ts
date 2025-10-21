@@ -48,6 +48,23 @@ const resolvers = {
       });
       return events.map(e => e.toJSON());
       
+    },
+    findEvent: async (_root: unknown, args: { id: string}) => {
+      const event = await Event.findByPk(args.id, {
+        include: {
+          model: User,
+          attributes: ['name', 'email', 'id'],
+        },
+      });
+
+      if (!event) {
+        throw new Error(`Event with ID ${args.id} not found`);
+      }
+      const data = event.toJSON();
+      return { 
+        ... data,
+        time: data.time instanceof Date ? data.time.toISOString() : String(data.time)
+      };
     }
   },
   Mutation: {
