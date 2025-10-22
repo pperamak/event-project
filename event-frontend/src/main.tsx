@@ -9,6 +9,7 @@ import {
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
+import { AuthProvider } from './hooks/useAuth.tsx';
 
 const httpLink = createHttpLink({
   uri: "/api/graphql",
@@ -46,6 +47,9 @@ const client = new ApolloClient({
 
 createRoot(document.getElementById('root')!).render(
    <ApolloProvider client={client}>
-      <App />
+      <AuthProvider>
+        <App />
+      </AuthProvider>
+      
    </ApolloProvider>  
 );

@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LOGIN_USER } from "../queries";
 import { useNavigate } from "react-router";
 import { loginSchema, type LoginSchema } from "../validation/loginSchema";
+import { useAuth } from "../hooks/useAuth";
 
 interface LoginUserData {
   login: {
@@ -22,11 +23,8 @@ interface LoginUserVars {
   password: string;
 }
 
-type LoginProps = {
-  onLogin: (token: string, name: string) => void;
-};
 
-const Login: React.FC<LoginProps> = ( {onLogin}) =>{
+const Login = ( ) =>{
   const [serverError, setServerError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   //const onLogin=props.onLogin;
@@ -44,6 +42,8 @@ const Login: React.FC<LoginProps> = ( {onLogin}) =>{
 
   const navigate = useNavigate();
 
+  const { login } = useAuth();
+
   const onSubmit = async (data: LoginSchema) => {
     setServerError(null);
     try {
@@ -53,7 +53,7 @@ const Login: React.FC<LoginProps> = ( {onLogin}) =>{
         console.log("Logged in user:", result.data.login.user.name);
         setSuccessMessage(`Welcome ${result.data.login.user.name} 👋`);
         //localStorage.setItem('events-user-token', result.data.login.value);
-        onLogin(result.data.login.value,  result.data.login.user.name);
+        login(result.data.login.value,  result.data.login.user.name);
         reset(); // clear form after success
         navigate("/events");
       }

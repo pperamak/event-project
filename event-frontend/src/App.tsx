@@ -5,31 +5,25 @@ import EventList from './components/EventList';
 import EventsLayout from './components/EventsLayout';
 import Event from './components/Event';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
-import { useAuth } from "./hooks/useAuth";
+import ProtectedRoute from './components/ProtectedRoute';
 
-
-
+ 
 const App = () => {
- const { user, login } = useAuth();
+ 
   return (
     <BrowserRouter>
       <Routes>
-        {!user ? (
-          <>
-            <Route path="/login" element={<Login onLogin={login}/>} />
-            <Route path="/register" element={<Register/>} />
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </>
-          ) :(
-            <>
-              <Route path="/events" element={<EventsLayout />}>
-                <Route index element={<EventList />} />
-                <Route path="new" element={<AddEvent />} />
-                <Route path=":id" element={<Event />} />
-              </Route>
-              <Route path="*" element={<Navigate to="/events" replace />} />
-            </>
-          )}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register/>} />      
+        <Route element={<ProtectedRoute/>}>
+          <Route path="/events" element={<EventsLayout />}>
+            <Route index element={<EventList />} />
+            <Route path="new" element={<AddEvent />} />
+            <Route path=":id" element={<Event />} />
+            <Route path="*" element={<Navigate to="/events" replace />} />
+          </Route>         
+        </Route>                         
+        <Route path="*" element={<Navigate to="/login" replace />} /> 
       </Routes>
     </BrowserRouter>
    

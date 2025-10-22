@@ -1,4 +1,5 @@
 import { Outlet, Link } from "react-router";
+import LogOutButton from "./LogOutButton";
 
 export default function EventsLayout() {
   return (
@@ -7,6 +8,7 @@ export default function EventsLayout() {
         <Link to="/events">All Events</Link>
         <Link to="/events/new">Create Event</Link>
       </nav>
+      <LogOutButton/>
       <main className="p-4">
         <Outlet /> 
       </main>
