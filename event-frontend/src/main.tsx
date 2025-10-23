@@ -9,7 +9,7 @@ import {
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
-import { AuthProvider } from './hooks/useAuth.tsx';
+import { AuthProvider } from './hooks/AuthProvider.tsx';
 
 const httpLink = createHttpLink({
   uri: "/api/graphql",

@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing";
-
+import { AuthProvider } from "../../hooks/AuthProvider";
 import { CREATE_USER, LOGIN_USER } from "../../queries";
 import Register from "../../components/Register";
 import Login from "../../components/Login";
@@ -46,12 +46,14 @@ describe("Auth Flow", () => {
     ];
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <AuthProvider>
+        <MockedProvider mocks={mocks} addTypename={false}>
         <div>
           <Register />
           <Login />
         </div>
       </MockedProvider>
+      </AuthProvider> 
     );
 
     // ---- Registration ----

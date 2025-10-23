@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
 import Login from "../Login";
 import { LOGIN_USER } from "../../queries";
+import { AuthProvider } from "../../hooks/AuthProvider";
 
 describe("Login component", () => {
   it("logs in successfully and shows welcome message", async () => {
@@ -24,9 +25,11 @@ describe("Login component", () => {
     ];
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <AuthProvider>
+       <MockedProvider mocks={mocks} addTypename={false}>
         <Login />
-      </MockedProvider>
+      </MockedProvider> 
+      </AuthProvider>
     );
 
     fireEvent.change(screen.getByLabelText(/email/i), {
@@ -55,9 +58,11 @@ describe("Login component", () => {
     ];
 
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <AuthProvider>
+       <MockedProvider mocks={mocks} addTypename={false}>
         <Login />
-      </MockedProvider>
+      </MockedProvider> 
+      </AuthProvider>
     );
 
     fireEvent.change(screen.getByLabelText(/email/i), {

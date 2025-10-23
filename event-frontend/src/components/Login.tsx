@@ -3,7 +3,7 @@ import { useMutation, ApolloError } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LOGIN_USER } from "../queries";
-import { useNavigate } from "react-router";
+//import { useNavigate } from "react-router";
 import { loginSchema, type LoginSchema } from "../validation/loginSchema";
 import { useAuth } from "../hooks/useAuth";
 
@@ -40,7 +40,7 @@ const Login = ( ) =>{
 
   const [loginUser] = useMutation<LoginUserData, LoginUserVars>(LOGIN_USER);
 
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   const { login } = useAuth();
 
@@ -55,7 +55,7 @@ const Login = ( ) =>{
         //localStorage.setItem('events-user-token', result.data.login.value);
         login(result.data.login.value,  result.data.login.user.name);
         reset(); // clear form after success
-        navigate("/events");
+        //navigate("/events");
       }
     } catch (e) {
       if (e instanceof ApolloError) {

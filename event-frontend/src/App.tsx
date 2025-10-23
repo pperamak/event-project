@@ -6,6 +6,7 @@ import EventsLayout from './components/EventsLayout';
 import Event from './components/Event';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import ProtectedRoute from './components/ProtectedRoute';
+import PublicRoute from './components/PublicRoute';
 
  
 const App = () => {
@@ -13,8 +14,10 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register/>} />      
+        <Route element={<PublicRoute/>}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register/>} />  
+        </Route>           
         <Route element={<ProtectedRoute/>}>
           <Route path="/events" element={<EventsLayout />}>
             <Route index element={<EventList />} />
