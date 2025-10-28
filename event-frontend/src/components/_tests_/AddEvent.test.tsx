@@ -18,7 +18,15 @@ afterAll(() => {
 });
 */
 
+const toUtcIso = (localDatetime: string) => {
+  const date = new Date(localDatetime);
+  return date.toISOString();
+};
+
 describe("AddEvent component", () => {
+   const mockDate = "2048-10-15T13:00"; // local time string
+  const isoTime = toUtcIso(mockDate); // convert to UTC ISO dynamically
+
   const mocks = [
     {
       request: {
@@ -26,7 +34,7 @@ describe("AddEvent component", () => {
         variables: {
           name: "Conference",
           description: "A great event",
-          time: "2048-10-15T10:00:00.000Z", // Match input exactly
+          time: isoTime, // Match input exactly
         },
       },
       result: {
@@ -35,7 +43,7 @@ describe("AddEvent component", () => {
             id: "1",
             name: "Conference",
             description: "A great event",
-            time: "2048-10-15T10:00:00.000Z",
+            time: isoTime,
             user: { id: "1", name: "Alice", email: "alice@example.com" },
           },
         },
@@ -84,7 +92,7 @@ describe("AddEvent component", () => {
 
     await user.type(screen.getByLabelText(/name/i), "Conference");
     await user.type(screen.getByLabelText(/description/i), "A great event");
-    await user.type(screen.getByLabelText(/date/i), "2048-10-15T13:00");
+    await user.type(screen.getByLabelText(/date/i), mockDate);
 
     await user.click(screen.getByRole("button", { name: /create/i }));
 
