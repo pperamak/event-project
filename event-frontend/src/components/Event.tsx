@@ -24,7 +24,7 @@ const Event = () =>{
   
   const { id } = useParams<{ id: string }>();
   const { data, loading, error } = useQuery<GetEventData>(GET_EVENT_BY_ID, {
-    variables: { id: Number(id) },
+    variables: { id: id },
   });
 
   if (loading) return <p>Loading...</p>;
