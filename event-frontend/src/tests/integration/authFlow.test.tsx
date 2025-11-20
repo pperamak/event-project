@@ -6,6 +6,7 @@ import { AuthProvider } from "../../hooks/AuthProvider";
 import { CREATE_USER, LOGIN_USER } from "../../queries";
 import Register from "../../components/Register";
 import Login from "../../components/Login";
+import { MemoryRouter } from "react-router";
 
 describe("Auth Flow", () => {
   it("registers a new user and then logs in", async () => {
@@ -48,11 +49,11 @@ describe("Auth Flow", () => {
     render(
       <AuthProvider>
         <MockedProvider mocks={mocks} addTypename={false}>
-        <div>
+        <MemoryRouter>
           <Register />
           <Login />
-        </div>
-      </MockedProvider>
+        </MemoryRouter>
+       </MockedProvider>
       </AuthProvider> 
     );
 

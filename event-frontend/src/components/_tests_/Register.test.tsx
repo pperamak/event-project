@@ -3,12 +3,15 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
 import Register from "../Register";
 import { CREATE_USER } from "../../queries";
+import { MemoryRouter } from "react-router";
 
 describe("Register component", () => {
   it("shows validation errors for invalid inputs", async () => {
     render(
       <MockedProvider>
-        <Register />
+        <MemoryRouter>
+           <Register />
+        </MemoryRouter>
       </MockedProvider>
     );
 
@@ -40,7 +43,9 @@ describe("Register component", () => {
 
     render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <Register />
+        <MemoryRouter>
+          <Register />
+        </MemoryRouter>
       </MockedProvider>
     );
 
@@ -83,7 +88,9 @@ describe("Register component", () => {
 
     render(
       <MockedProvider mocks={mocks} addTypename={false}>
-        <Register />
+        <MemoryRouter>
+          <Register />
+        </MemoryRouter>
       </MockedProvider>
     );
 

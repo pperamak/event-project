@@ -46,7 +46,7 @@ const resolvers = {
         raw: false,
         nest: true
       });
-      return events.map(e => e.toJSON());
+      return events.map(e => ({...e.toJSON(), time: e.time instanceof Date ? e.time.toISOString() : String(e.time)}));
       
     },
     findEvent: async (_root: unknown, args: { id: string}) => {

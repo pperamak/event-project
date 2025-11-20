@@ -6,6 +6,7 @@ import { LOGIN_USER } from "../queries";
 //import { useNavigate } from "react-router";
 import { loginSchema, type LoginSchema } from "../validation/loginSchema";
 import { useAuth } from "../hooks/useAuth";
+import { Link } from "react-router";
 
 interface LoginUserData {
   login: {
@@ -69,48 +70,65 @@ const Login = ( ) =>{
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4 max-w-sm mx-auto"
-    >
-      <div>
-        <label htmlFor="email" className="block">Email</label>
-        <input
-          data-testid="login-email"
-          id="email"
-          type="email"
-          {...register("email")}
-          className="border p-2 w-full"
-        />
-        {errors.email && (
-          <p className="text-red-500">{errors.email.message}</p>
-        )}
-      </div>
-
-      <div>
-        <label htmlFor="password" className="block">Password</label>
-        <input
-          data-testid="login-password"
-          id="password"
-          type="password"
-          {...register("password")}
-          className="border p-2 w-full"
-        />
-        {errors.password && (
-          <p className="text-red-500">{errors.password.message}</p>
-        )}
-      </div>
-
-      {serverError && <p className="text-red-500">{serverError}</p>}
-      {successMessage && <p className="text-green-500">{successMessage}</p>}
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="bg-blue-500 text-white px-4 py-2 rounded"
+    <div className="mt-24 flex justify-center">
+    <div className="w-full max-w-sm">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-4"
       >
-        {isSubmitting ? "Logging in..." : "Log in"}
-      </button>
-    </form>
+        <div>
+          <label htmlFor="email" className="block font-medium">
+            Email
+          </label>
+          <input
+            data-testid="login-email"
+            id="email"
+            type="email"
+            {...register("email")}
+            className="border p-2 w-full rounded"
+          />
+          {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="password" className="block font-medium">
+            Password
+          </label>
+          <input
+            data-testid="login-password"
+            id="password"
+            type="password"
+            {...register("password")}
+            className="border p-2 w-full rounded"
+          />
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password.message}</p>
+          )}
+        </div>
+
+        {serverError && <p className="text-red-500">{serverError}</p>}
+        {successMessage && <p className="text-green-500">{successMessage}</p>}
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-amber-600 text-white px-4 py-2 rounded w-full hover:bg-amber-800"
+        >
+          {isSubmitting ? "Logging in..." : "Log in"}
+        </button>
+      </form>
+
+      {/* Paragraph now aligned to the left with form */}
+      <p className="mt-4 text-sm">
+        Not yet registered?{" "}
+        <Link to="/register" className="text-blue-900 font-medium">
+          Register
+        </Link>
+      </p>
+    </div>
+  </div>
   );
 };
 

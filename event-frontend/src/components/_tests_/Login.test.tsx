@@ -4,6 +4,7 @@ import { MockedProvider } from "@apollo/client/testing";
 import Login from "../Login";
 import { LOGIN_USER } from "../../queries";
 import { AuthProvider } from "../../hooks/AuthProvider";
+import { MemoryRouter } from "react-router";
 
 describe("Login component", () => {
   it("logs in successfully and shows welcome message", async () => {
@@ -27,8 +28,10 @@ describe("Login component", () => {
     render(
       <AuthProvider>
        <MockedProvider mocks={mocks} addTypename={false}>
-        <Login />
-      </MockedProvider> 
+        <MemoryRouter>
+          <Login />
+        </MemoryRouter>
+        </MockedProvider> 
       </AuthProvider>
     );
 
@@ -60,7 +63,9 @@ describe("Login component", () => {
     render(
       <AuthProvider>
        <MockedProvider mocks={mocks} addTypename={false}>
-        <Login />
+        <MemoryRouter>
+          <Login />
+        </MemoryRouter>
       </MockedProvider> 
       </AuthProvider>
     );

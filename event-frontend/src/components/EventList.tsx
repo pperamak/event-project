@@ -33,10 +33,14 @@ const EventList = () => {
 
   const events = data ? data.allEvents : [];
 
+  const sortedEvents = [...events].sort(
+  (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()
+);
+
   return (
-    <ul>
-     {events.map(event =><li key={event.id}>
-      <Link to={`/events/${event.id}`}>{event.name}</Link></li> )} 
+    <ul className="flex">
+     {sortedEvents.map(event =><li key={event.id}>
+      <Link to={`/events/${event.id}`} ><article className="p-2 m-2 rounded bg-red-200 hover:bg-red-400"><p>{event.name}</p><p>{new Date(event.time).toLocaleString()}</p></article></Link></li> )} 
     </ul>
     
   );
