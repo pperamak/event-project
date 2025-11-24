@@ -18,6 +18,7 @@ class Event
   declare time: Date;
   declare description: string;
   declare userId: number;
+  declare image?: string;
 
   // ✅ Association (typed)
   declare user?: User;
@@ -57,6 +58,7 @@ Event.init(
     name: { type: DataTypes.STRING, allowNull: false },
     time: { type: DataTypes.DATE, allowNull: false },
     description: { type: DataTypes.TEXT, allowNull: false },
+    image: { type: DataTypes.STRING, allowNull: true},
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,

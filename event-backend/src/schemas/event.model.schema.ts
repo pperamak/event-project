@@ -5,6 +5,7 @@ export const eventSchema = z.object({
   name: z.string().min(1),
   time: z.date(),
   description: z.string(),
-  userId: z.number().int().positive()
+  userId: z.number().int().positive(),
+  image: z.string().optional()
 });
   
