@@ -49,12 +49,10 @@ export function AddEvent() {
     formData.append("api_key", sig.apiKey);
     formData.append("timestamp", sig.timestamp.toString());
     formData.append("signature", sig.signature);
-    //formData.append("upload_preset", "events_preset");
-     //formData.append("eager", "c_pad,h_300,w_400|c_crop,h_200,w_260");
     formData.append("folder", "events");
    
 
-    //console.log("formData:", formData);
+    
     const uploadRes = await fetch(
       `https://api.cloudinary.com/v1_1/${sig.cloudName}/image/upload`,
     { method: "POST", body: formData }
