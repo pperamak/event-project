@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.13.9",
+    "@cloudinary/react": "^1.14.3",
     "@hookform/resolvers": "^5.2.2",
     "@tailwindcss/vite": "^4.1.17",
     "graphql": "^16.11.0",

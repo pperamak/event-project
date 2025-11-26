@@ -34,6 +34,7 @@ class Event
       time: this.time,
       description: this.description,
       userId: this.userId,
+      image: this.image
     };
 
     if (this.user) {

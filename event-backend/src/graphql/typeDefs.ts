@@ -18,6 +18,14 @@ export const typeDefs=gql`
     time: String!
     description: String!
     user: User!
+    image: String
+  }
+
+  type CloudinarySignature {
+    signature: String!
+    timestamp: Int!
+    cloudName: String!
+    apiKey: String!
   }
   
   type Query {
@@ -39,7 +47,10 @@ export const typeDefs=gql`
       name: String!
       time: String!
       description: String!
+      image: String
     ): Event!
+
+    getCloudinarySignature: CloudinarySignature!
 
     login(
       email: String!

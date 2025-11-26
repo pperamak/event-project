@@ -8,6 +8,8 @@ import { handleSequelizeErrors } from '../util/handleSequelizeErrors.js';
 import { ContextUser, MyContext } from '../types/context.type.js';
 import { EventArgs } from '../types/eventArgs.type.js';
 import { createEventInputSchema } from '../schemas/event.input.schema.js';
+import cloudinary from '../util/cloudinary.js';
+import { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } from '../util/config.js';
 //import { eventToResponseFormat } from '../util/eventToResponse.js';
 //import { EventAttributes } from '../types/eventAttributes.type.js';
 
@@ -127,7 +129,7 @@ const resolvers = {
         });
       }
 
-      const { name, time, description } = parsed.data;
+      const { name, time, description, image } = parsed.data;
 
       const userId = context.currentUser.id;
 
@@ -136,6 +138,7 @@ const resolvers = {
         name: string;
         time: string;
         description: string;
+        image: string;
         userId: number;
         user: ContextUser | null;
       }>(async () => {
@@ -143,7 +146,8 @@ const resolvers = {
           name,
           time,
           description,
-          userId
+          userId,
+          image
         });
 
         const data = newEvent.toJSON.bind(newEvent)() as {
@@ -152,7 +156,7 @@ const resolvers = {
           time: Date;
           description: string;
           userId: number;
-          
+          image: string
         };
         
         
@@ -163,6 +167,23 @@ const resolvers = {
         user: context.currentUser
         };
   });
+    },
+      getCloudinarySignature: () => {
+      const timestamp = Math.round(new Date().getTime() / 1000);
+
+      const signature = cloudinary.utils.api_sign_request(
+        { timestamp: timestamp,
+          folder: "events"
+         },
+        CLOUDINARY_API_SECRET
+      );
+
+      return {
+        signature,
+        timestamp,
+        cloudName: CLOUDINARY_CLOUD_NAME,
+        apiKey: CLOUDINARY_API_KEY
+      };
     },
   },
 };

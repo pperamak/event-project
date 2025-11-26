@@ -11,6 +11,14 @@ export const eventFormSchema = z.object({
 ),
 
   description: z.string().min(1, "Description is required"),
+
+  image: z
+  .instanceof(FileList)
+  .refine(
+    (files) => files.length === 1,
+    "Please select an image"
+  )
+  .optional()
 });
 
 export type EventFormSchema = z.infer<typeof eventFormSchema>;

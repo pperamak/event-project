@@ -13,6 +13,7 @@ interface Event {
   name: string;
   time: string;
   description: string;
+  image: string;
   user: EventUser;
 }
 
@@ -36,6 +37,7 @@ const Event = () =>{
   return (
     <div className="mt-24 flex justify-center">
     <div className="w-full max-w-xl border-red-900 p-2 rounded bg-red-200">
+      <img src={event.image} alt="Uploaded" className="rounded shadow" />
       <h2>{event.name}</h2>
       <p>{event.description}</p>
       <p>{new Date(event.time).toLocaleString()}</p>
