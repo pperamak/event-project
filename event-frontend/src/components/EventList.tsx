@@ -38,10 +38,10 @@ const EventList = () => {
 );
 
   return (
-    <ul className="flex">
+    <ol className="flex">
      {sortedEvents.map(event =><li key={event.id}>
       <Link to={`/events/${event.id}`} ><article className="p-2 m-2 rounded bg-red-200 hover:bg-red-400"><p>{event.name}</p><p>{new Date(event.time).toLocaleString()}</p></article></Link></li> )} 
-    </ul>
+    </ol>
     
   );
 };

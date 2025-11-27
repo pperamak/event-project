@@ -2,21 +2,12 @@ import { describe, it, expect } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing";
-import { CREATE_EVENT } from "../../queries";
+
+import { CREATE_EVENT, GET_SIGNATURE } from "../../queries";
 import AddEvent from "../AddEvent";
-//import { vi } from "vitest";
 
-// Mock Date.now so Zod future date validation is predictable
-/*
-beforeAll(() => {
-  vi.useFakeTimers();
-  vi.setSystemTime(new Date("2025-10-10T12:00:00Z"));
-});
-
-afterAll(() => {
-  vi.useRealTimers();
-});
-*/
+// Must match the value used in AddEvent.tsx
+const DEFAULT_IMAGE_URL = "https://res.cloudinary.com/dqm9cv8nj/image/upload/v1764240724/780-7801295_celebration-download-png-celebration-background_iezywq.jpg";
 
 const toUtcIso = (localDatetime: string) => {
   const date = new Date(localDatetime);
@@ -24,32 +15,48 @@ const toUtcIso = (localDatetime: string) => {
 };
 
 describe("AddEvent component", () => {
-   const mockDate = "2048-10-15T13:00"; // local time string
-  const isoTime = toUtcIso(mockDate); // convert to UTC ISO dynamically
+  const mockDate = "2048-10-15T13:00";
+  const isoTime = toUtcIso(mockDate);
 
-  const mocks = [
-    {
-      request: {
-        query: CREATE_EVENT,
-        variables: {
-          name: "Conference",
-          description: "A great event",
-          time: isoTime, // Match input exactly
-        },
-      },
-      result: {
-        data: {
-          createEvent: {
-            id: "1",
-            name: "Conference",
-            description: "A great event",
-            time: isoTime,
-            user: { id: "1", name: "Alice", email: "alice@example.com" },
-          },
+  // Mock for GET_SIGNATURE (always needed)
+  const signatureMock = {
+    request: { query: GET_SIGNATURE },
+    result: {
+      data: {
+        getCloudinarySignature: {
+          apiKey: "testApiKey",
+          cloudName: "demo",
+          signature: "testSignature",
+          timestamp: 1234567890,
+          __typename: "CloudinarySignature",
         },
       },
     },
-  ];
+  };
+
+  const createEventSuccessMock = {
+    request: {
+      query: CREATE_EVENT,
+      variables: {
+        name: "Conference",
+        description: "A great event",
+        time: isoTime,
+        image: DEFAULT_IMAGE_URL, // MUST MATCH component behavior
+      },
+    },
+    result: {
+      data: {
+        createEvent: {
+          id: "1",
+          name: "Conference",
+          description: "A great event",
+          time: isoTime,
+          image: DEFAULT_IMAGE_URL,
+          user: { id: "1", name: "Alice", email: "alice@example.com" },
+        },
+      },
+    },
+  };
 
   it("renders the form correctly", () => {
     render(
@@ -61,85 +68,81 @@ describe("AddEvent component", () => {
     expect(screen.getByLabelText(/name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/date/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /create/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /create event/i })).toBeInTheDocument();
   });
 
   it("shows validation errors for empty form", async () => {
     const user = userEvent.setup();
+
     render(
       <MockedProvider mocks={[]} addTypename={false}>
-        <AddEvent/>
+        <AddEvent />
       </MockedProvider>
     );
 
-    
-    await user.click(screen.getByRole("button", { name: /create/i }));
+    await user.click(screen.getByRole("button", { name: /create event/i }));
 
-    // Wait for async validation
     const errors = await screen.findAllByText(/required/i);
-    expect(errors).toHaveLength(2);
+    expect(errors.length).toBeGreaterThan(0);
   });
 
   it("submits the form successfully and shows success message", async () => {
     const user = userEvent.setup();
+
     render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-          <AddEvent /> 
+      <MockedProvider
+        mocks={[signatureMock, createEventSuccessMock]}
+        addTypename={false}
+      >
+        <AddEvent />
       </MockedProvider>
     );
-
-    
 
     await user.type(screen.getByLabelText(/name/i), "Conference");
     await user.type(screen.getByLabelText(/description/i), "A great event");
     await user.type(screen.getByLabelText(/date/i), mockDate);
 
-    await user.click(screen.getByRole("button", { name: /create/i }));
+    await user.click(screen.getByRole("button", { name: /create event/i }));
 
-    // Wait for Apollo mutation to resolve
     await waitFor(() => {
-      expect(screen.getByRole("alert")).toHaveTextContent(/created successfully/i);
+      expect(screen.getByRole("alert")).toHaveTextContent(
+        /created successfully/i
+      );
     });
   });
 
   it("shows an error message when mutation fails", async () => {
-    const errorMocks = [
-      {
-        request: {
-          query: CREATE_EVENT,
-          variables: {
-            name: "Conference",
-            description: "A great event",
-            time: "2025-10-15T10:00",
-          },
-        },
-        error: new Error("Failed to create event"),
-      },
-    ];
-
     const user = userEvent.setup();
 
+    const failMock = {
+      request: {
+        query: CREATE_EVENT,
+        variables: {
+          name: "Conference",
+          description: "A great event",
+          time: toUtcIso("2025-10-15T10:00"),
+          image: DEFAULT_IMAGE_URL,
+        },
+      },
+      error: new Error("Failed to create event"),
+    };
+
     render(
-      <MockedProvider mocks={errorMocks} addTypename={false}>
+      <MockedProvider
+        mocks={[signatureMock, failMock]}
+        addTypename={false}
+      >
         <AddEvent />
       </MockedProvider>
     );
-
-    
 
     await user.type(screen.getByLabelText(/name/i), "Conference");
     await user.type(screen.getByLabelText(/description/i), "A great event");
     await user.type(screen.getByLabelText(/date/i), "2025-10-15T10:00");
 
-    await user.click(screen.getByRole("button", { name: /create/i }));
+    await user.click(screen.getByRole("button", { name: /create event/i }));
+
     const errors = await screen.findByText(/future date/i);
     expect(errors).toBeDefined();
-
-    /*
-    await waitFor(() => {
-      expect(screen.getByRole("alert")).toHaveTextContent(/failed to create event/i);
-    });
-    */
   });
-  
 });

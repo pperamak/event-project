@@ -31,8 +31,14 @@ export function AddEvent() {
     mode: "onBlur"
   });
 
+  const DEFAULT_IMAGE_URL = "https://res.cloudinary.com/dqm9cv8nj/image/upload/v1764240724/780-7801295_celebration-download-png-celebration-background_iezywq.jpg";
+  const MAX_FILE_SIZE = 6 * 1024 * 1024; 
+  const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+
   const [message, setMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
 
   const [getSignature] = useMutation<GetSignatureResponse>(GET_SIGNATURE);
 
@@ -72,7 +78,7 @@ export function AddEvent() {
     try{
       const { name, description, time } =data;
       const file = data.image?.[0];
-      let imageUrl = null;
+      let imageUrl = DEFAULT_IMAGE_URL;
       if (file){
         imageUrl= await handleUpload(file);
       }
@@ -123,7 +129,44 @@ export function AddEvent() {
 
       <div className="mt-2">
         <label htmlFor="image" className="block font-medium">Image</label>
-        <input id="image" type="file" {...register("image")} className="bg-red-100"  accept="image/*"/>
+        <input
+          id="image"
+          type="file"
+          accept="image/*"
+          className="bg-red-100"
+          {...register("image")}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+
+            setFileError(null);
+            setPreviewUrl(null);
+
+            if (file) {
+              if (!ALLOWED_TYPES.includes(file.type)) {
+                setFileError("Only PNG, JPG, JPEG, or WEBP images are allowed.");
+                return;
+              }
+
+              if (file.size > MAX_FILE_SIZE) {
+                setFileError("Image must be smaller than 2MB.");
+                return;
+              }
+
+              setPreviewUrl(URL.createObjectURL(file));
+              }
+            }}
+          />
+
+          {fileError && <p className="text-red-600">{fileError}</p>}
+
+          {previewUrl && (
+            <img
+              src={previewUrl}
+              alt="Preview"
+              className="mt-2 max-h-48 rounded shadow"
+            />
+          )}
+          <p>{errors.image?.message}</p>
       </div>
             
       <button type="submit" disabled={isSubmitting} className="bg-red-400 text-white px-4 py-2 mt-4 rounded hover:bg-red-600">

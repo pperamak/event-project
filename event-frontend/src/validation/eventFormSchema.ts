@@ -15,8 +15,8 @@ export const eventFormSchema = z.object({
   image: z
   .instanceof(FileList)
   .refine(
-    (files) => files.length === 1,
-    "Please select an image"
+    (files) => !files || files.length <= 1,
+    "You can only upload one file"
   )
   .optional()
 });
