@@ -28,6 +28,8 @@ const Event = () =>{
     variables: { id: id },
   });
 
+  const DEFAULT_IMAGE_URL = "https://res.cloudinary.com/dqm9cv8nj/image/upload/v1764240724/780-7801295_celebration-download-png-celebration-background_iezywq.jpg";
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
   if (!data || !data.findEvent) return <p>No event found.</p>;
@@ -37,7 +39,7 @@ const Event = () =>{
   return (
     <div className="mt-24 flex justify-center">
     <div className="w-full max-w-xl border-red-900 p-2 rounded bg-red-200">
-      <img src={event.image} alt="Uploaded" className="rounded shadow" />
+      <img src={event.image ? event.image : DEFAULT_IMAGE_URL} alt="Uploaded" className="rounded shadow" />
       <h2>{event.name}</h2>
       <p>{event.description}</p>
       <p>{new Date(event.time).toLocaleString()}</p>

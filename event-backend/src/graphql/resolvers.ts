@@ -119,7 +119,7 @@ const resolvers = {
       }
 
       // 🔹 Validate args with Zod
-      const parsed = createEventInputSchema.safeParse(args);
+      const parsed = createEventInputSchema.safeParse(args.input);
       if (!parsed.success) {
         throw new GraphQLError("Invalid input", {
           extensions: {
@@ -129,7 +129,7 @@ const resolvers = {
         });
       }
 
-      const { name, time, description, image } = parsed.data;
+      const { name, time, description, image, latitude, longitude, address } = parsed.data;
 
       const userId = context.currentUser.id;
 
@@ -139,6 +139,9 @@ const resolvers = {
         time: string;
         description: string;
         image: string;
+        latitude: number;
+        longitude: number;
+        address: string;
         userId: number;
         user: ContextUser | null;
       }>(async () => {
@@ -147,7 +150,10 @@ const resolvers = {
           time,
           description,
           userId,
-          image
+          image,
+          latitude,
+          longitude,
+          address
         });
 
         const data = newEvent.toJSON.bind(newEvent)() as {
@@ -156,7 +162,10 @@ const resolvers = {
           time: Date;
           description: string;
           userId: number;
-          image: string
+          image: string;
+          latitude: number;
+          longitude: number;
+          address: string;
         };
         
         

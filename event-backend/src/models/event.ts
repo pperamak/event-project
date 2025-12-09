@@ -19,6 +19,9 @@ class Event
   declare description: string;
   declare userId: number;
   declare image?: string;
+  declare latitude?: number;
+  declare longitude?: number;
+  declare address?: string;
 
   // ✅ Association (typed)
   declare user?: User;
@@ -34,7 +37,10 @@ class Event
       time: this.time,
       description: this.description,
       userId: this.userId,
-      image: this.image
+      image: this.image,
+      latitude: this.latitude,
+      longitude: this.longitude,
+      address: this.address
     };
 
     if (this.user) {
@@ -60,6 +66,9 @@ Event.init(
     time: { type: DataTypes.DATE, allowNull: false },
     description: { type: DataTypes.TEXT, allowNull: false },
     image: { type: DataTypes.STRING, allowNull: true},
+    latitude: { type: DataTypes.FLOAT, allowNull: true},
+    longitude: { type: DataTypes.FLOAT, allowNull: true},
+    address: { type: DataTypes.STRING, allowNull: true},
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,

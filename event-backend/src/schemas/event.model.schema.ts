@@ -6,6 +6,9 @@ export const eventSchema = z.object({
   time: z.date(),
   description: z.string(),
   userId: z.number().int().positive(),
-  image: z.string().optional()
+  image: z.string().optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
+  address: z.string().optional()
 });
   

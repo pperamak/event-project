@@ -19,6 +19,9 @@ export const typeDefs=gql`
     description: String!
     user: User!
     image: String
+    latitude: Float
+    longitude: Float
+    address: String
   }
 
   type CloudinarySignature {
@@ -35,6 +38,17 @@ export const typeDefs=gql`
     findEvent(id: ID!): Event
   }
   
+  
+  input CreateEventInput {
+    name: String!
+    description: String!
+    time: String!
+    image: String
+    latitude: Float
+    longitude: Float
+    address: String
+  }
+  
 
   type Mutation {
     createUser(
@@ -44,10 +58,7 @@ export const typeDefs=gql`
     ): User!
 
     createEvent(
-      name: String!
-      time: String!
-      description: String!
-      image: String
+      input: CreateEventInput!
     ): Event!
 
     getCloudinarySignature: CloudinarySignature!
