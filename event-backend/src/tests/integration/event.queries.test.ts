@@ -36,7 +36,7 @@ describe("Event resolvers", () => {
   test("createEvent mutation creates an event for the logged in user", async () => {
     const mutation = `
       mutation CreateEvent($name: String!, $time: String!, $description: String!) {
-        createEvent(name: $name, time: $time, description: $description) {
+        createEvent(input: {name: $name, time: $time, description: $description}) {
           id
           name
           time
@@ -115,9 +115,11 @@ describe("Event resolvers", () => {
     const mutation = `
       mutation {
         createEvent(
-          name: "Unauthorized Event"
-          time: "${new Date("2025-12-20T18:00:00.000Z").toISOString()}"
-          description: "Should fail because no auth"
+          input: {
+            name: "Unauthorized Event"
+            time: "${new Date("2025-12-20T18:00:00.000Z").toISOString()}"
+            description: "Should fail because no auth"
+          }
         ) {
           id
           name
