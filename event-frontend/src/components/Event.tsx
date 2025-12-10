@@ -1,6 +1,7 @@
 import { useParams } from "react-router";
 import { useQuery } from "@apollo/client";
-import { GET_EVENT_BY_ID } from "../queries";
+import { GET_EVENT_BY_ID } from "../queries/queries";
+import { GoogleMap, Marker } from "@react-google-maps/api";
 
 interface EventUser {
   id: string;
@@ -14,6 +15,9 @@ interface Event {
   time: string;
   description: string;
   image: string;
+  latitude: number;
+  longitude: number;
+  address: string;
   user: EventUser;
 }
 
@@ -44,6 +48,22 @@ const Event = () =>{
       <p>{event.description}</p>
       <p>{new Date(event.time).toLocaleString()}</p>
       <p>Hosted by: {event.user.name}</p>
+      <GoogleMap
+        mapContainerStyle={{ width: "100%", height: "300px" }}
+        center={{ lat: event.latitude, lng: event.longitude }}
+        zoom={14}
+      >
+        <Marker position={{ lat: event.latitude, lng: event.longitude }} />
+      </GoogleMap>
+
+      <a
+        href={`https://www.google.com/maps/dir/?api=1&destination=${event.latitude},${event.longitude}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Open in Google Maps
+      </a>
+
     </div>
     </div>
   );

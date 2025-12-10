@@ -31,18 +31,27 @@ export const LOGIN_USER = gql`
 `;
 
 export const CREATE_EVENT = gql`
-  mutation addEvent($name: String!, $time: String!, $description: String!, $image: String){
+  mutation addEvent($name: String!, $time: String!, $description: String!, $image: String, $latitude: Float, $longitude: Float, $address: String){
     createEvent(
-      name: $name,
-      time: $time,
-      description: $description 
-      image: $image   
+      input:{
+        name: $name,
+        time: $time,
+        description: $description, 
+        image: $image, 
+        latitude: $latitude,
+        longitude: $longitude,
+        address: $address
+      }
+        
     ){
       id
       name
       time
       description
       image
+      latitude
+      longitude
+      address
       user{
         name
         email
@@ -60,6 +69,9 @@ export const GET_EVENTS = gql`
       time
       description
       image
+      latitude
+      longitude
+      address
       user{
         name
         email
@@ -77,6 +89,9 @@ export const GET_EVENT_BY_ID = gql`
     time
     description
     image
+    latitude
+    longitude
+    address
     user{
         name
         email

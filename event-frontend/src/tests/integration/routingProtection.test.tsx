@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router";
-import { AuthProvider } from "../../hooks/AuthProvider";
+import { AuthProvider } from "../../providers/AuthProvider";
 import { MockedProvider } from "@apollo/client/testing";
 import ProtectedRoute from "../../components/ProtectedRoute";
 

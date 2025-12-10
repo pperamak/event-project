@@ -1,8 +1,8 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
-import { AuthProvider } from "../../hooks/AuthProvider";
+import { AuthProvider } from "../../providers/AuthProvider";
 import App from "../../App";
-import { LOGIN_USER } from "../../queries";
+import { LOGIN_USER } from "../../queries/queries";
 
 const loginMocks = [
   {

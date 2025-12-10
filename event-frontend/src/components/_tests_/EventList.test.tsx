@@ -3,7 +3,7 @@ import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
 import { MemoryRouter, Routes, Route } from "react-router";
 import EventList from "../EventList";
-import { GET_EVENTS } from "../../queries";
+import { GET_EVENTS } from "../../queries/queries";
 
 const mockEvents = [
   {

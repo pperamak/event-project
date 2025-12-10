@@ -9,8 +9,9 @@ import {
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { onError } from '@apollo/client/link/error';
-import { AuthProvider } from './hooks/AuthProvider.tsx';
+import { AuthProvider } from './providers/AuthProvider.tsx';
 import './index.css';
+import  GoogleMapsProvider  from './providers/GoogleMapsProvider.tsx';
 
 const httpLink = createHttpLink({
   uri: "/api/graphql",
@@ -49,8 +50,9 @@ const client = new ApolloClient({
 createRoot(document.getElementById('root')!).render(
    <ApolloProvider client={client}>
       <AuthProvider>
-        <App />
+        <GoogleMapsProvider>
+          <App />
+        </GoogleMapsProvider>
       </AuthProvider>
-      
    </ApolloProvider>  
 );

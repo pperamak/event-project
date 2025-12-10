@@ -1,183 +1,166 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { eventFormSchema } from "../validation/eventFormSchema";
-import type { EventFormSchema } from "../validation/eventFormSchema";
-import { CREATE_EVENT } from "../queries";
-import { GET_SIGNATURE } from "../queries";
+// src/pages/AddEvent.tsx
 import { useMutation } from "@apollo/client";
 import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
+import { CREATE_EVENT, GET_SIGNATURE } from "../queries/queries";
+import { eventFormSchema } from "../validation/eventFormSchema";
+import type { EventFormSchema } from "../validation/eventFormSchema";
 
-type GetSignatureResponse = {
-  getCloudinarySignature: {
-    apiKey: string;
-    cloudName: string;
-    signature: string;
-    timestamp: number;
-  };
-};
+import ImageUpload from "./ImageUpload";
+import EventLocationPicker from "./EventLocationPicker";
+import type { LocationData } from "./EventLocationPicker";
 
 interface CloudinaryUploadResult {
   secure_url: string;
-  public_id: string;
-  [key: string]: unknown; // in case Cloudinary adds extra fields
 }
 
+const DEFAULT_IMAGE =
+  "https://res.cloudinary.com/dqm9cv8nj/image/upload/v1764240724/780-7801295_celebration-download-png-celebration-background_iezywq.jpg";
 
-export function AddEvent() {
-  const { register, handleSubmit, formState: { errors, isSubmitting }, reset 
-} = useForm({
+export default function AddEvent() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm({
     resolver: zodResolver(eventFormSchema),
-    mode: "onBlur"
+    mode: "onBlur",
   });
 
-  const DEFAULT_IMAGE_URL = "https://res.cloudinary.com/dqm9cv8nj/image/upload/v1764240724/780-7801295_celebration-download-png-celebration-background_iezywq.jpg";
-  const MAX_FILE_SIZE = 6 * 1024 * 1024; 
-  const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+  const [getSignature] = useMutation(GET_SIGNATURE);
+  const [createEvent] = useMutation(CREATE_EVENT);
 
-  const [message, setMessage] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [fileError, setFileError] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [location, setLocation] = useState<LocationData | null>(null);
 
-  const [getSignature] = useMutation<GetSignatureResponse>(GET_SIGNATURE);
+  const [msg, setMsg] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
 
-  const handleUpload = async (file: File): Promise<string>=>{
-    
+  const uploadToCloudinary = async (file: File): Promise<string> => {
     const { data } = await getSignature();
-    if (!data?.getCloudinarySignature) {
-      throw new Error("Failed to get signature from backend");
-    }
+    if (!data?.getCloudinarySignature) throw new Error("Missing signature");
+
     const sig = data.getCloudinarySignature;
-    console.log(sig);
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("api_key", sig.apiKey);
     formData.append("timestamp", sig.timestamp.toString());
     formData.append("signature", sig.signature);
     formData.append("folder", "events");
-   
 
-    
-    const uploadRes = await fetch(
+    const res = await fetch(
       `https://api.cloudinary.com/v1_1/${sig.cloudName}/image/upload`,
-    { method: "POST", body: formData }
+      { method: "POST", body: formData }
     );
 
-    console.log(uploadRes);
-    const json = (await uploadRes.json()) as CloudinaryUploadResult;
+    const json = (await res.json()) as CloudinaryUploadResult;
     return json.secure_url;
   };
-  
-  const [createEvent] = useMutation(CREATE_EVENT);
-  const onSubmit = async (data: EventFormSchema) => {
-    //console.log("AddEvent submit clicked");
 
-    setMessage(null);
-    setErrorMessage(null);
-    try{
-      const { name, description, time } =data;
-      const file = data.image?.[0];
-      let imageUrl = DEFAULT_IMAGE_URL;
-      if (file){
-        imageUrl= await handleUpload(file);
-      }
-      const isoTime = new Date(time).toISOString();
-      const result = await createEvent({ variables: { name, description, time: isoTime, image: imageUrl }});
-      console.log("Created event: ", result.data.createEvent);
-      setMessage(`Event "${result.data.createEvent.name}" created successfully!`);
+  const onSubmit = async (data: EventFormSchema) => {
+    setMsg(null);
+    setErr(null);
+
+    try {
+      let imageUrl = DEFAULT_IMAGE;
+      if (selectedFile) imageUrl = await uploadToCloudinary(selectedFile);
+
+      const isoTime = new Date(data.time).toISOString();
+
+      const result = await createEvent({
+        variables: {
+          name: data.name,
+          description: data.description,
+          time: isoTime,
+          image: imageUrl,
+          latitude: location?.lat,
+          longitude: location?.lng,
+          address: location?.address,
+        },
+      });
+
+      setMsg(`Event "${result.data.createEvent.name}" created!`);
       reset();
-    }catch(e){
-      setErrorMessage("Failed to create event");
-      console.log(e);
+      setSelectedFile(null);
+      setLocation(null);
+    } catch (e) {
+      console.error(e);
+      setErr("Failed to create event.");
     }
   };
 
   useEffect(() => {
-    if (message || errorMessage) {
-      const timer = setTimeout(() => {
-        setMessage(null);
-        setErrorMessage(null);
+    if (msg || err) {
+      const t = setTimeout(() => {
+        setMsg(null);
+        setErr(null);
       }, 3000);
-
-      return () => clearTimeout(timer);
+      return () => clearTimeout(t);
     }
-  }, [message, errorMessage]);
+  }, [msg, err]);
 
   return (
     <div className="mt-24 flex justify-center">
-    <div className="w-full max-w-xl border-red-900 p-2 rounded bg-red-200">
-      <h1 className="text-2xl">Add event</h1>
-    <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
-      <div>
-       <label htmlFor="name" className="block font-medium">Name</label>
-       <input id="name" type="text" {...register("name")} placeholder="Event name" className="bg-red-100 w-full" /> 
-       {errors.name && <p>{errors.name.message}</p>}
-      </div>
+      <div className="w-full max-w-xl p-2 rounded bg-red-200">
+        <h1 className="text-2xl">Add event</h1>
 
-      <div className="mt-2">
-        <label htmlFor="description" className="block font-medium">Description</label>
-        <textarea id="description" {...register("description")} placeholder="Description" className="bg-red-100 w-full"/>
-        {errors.description && <p>{errors.description.message}</p>}
-      </div>
-      
-      <div className="mt-2">
-        <label htmlFor="time" className="block font-medium">Date</label>
-        <input id="time" type="datetime-local" {...register("time")} className="bg-red-100"/>
-        {errors.time && <p>{errors.time.message}</p>}
-      </div>
-
-      <div className="mt-2">
-        <label htmlFor="image" className="block font-medium">Image</label>
-        <input
-          id="image"
-          type="file"
-          accept="image/*"
-          className="bg-red-100"
-          {...register("image")}
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-
-            setFileError(null);
-            setPreviewUrl(null);
-
-            if (file) {
-              if (!ALLOWED_TYPES.includes(file.type)) {
-                setFileError("Only PNG, JPG, JPEG, or WEBP images are allowed.");
-                return;
-              }
-
-              if (file.size > MAX_FILE_SIZE) {
-                setFileError("Image must be smaller than 2MB.");
-                return;
-              }
-
-              setPreviewUrl(URL.createObjectURL(file));
-              }
-            }}
-          />
-
-          {fileError && <p className="text-red-600">{fileError}</p>}
-
-          {previewUrl && (
-            <img
-              src={previewUrl}
-              alt="Preview"
-              className="mt-2 max-h-48 rounded shadow"
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
+          {/* Name */}
+          <div>
+            <label className="block font-medium">Name</label>
+            <input
+              type="text"
+              {...register("name")}
+              className="bg-red-100 w-full"
+              placeholder="Event name"
             />
-          )}
-          <p>{errors.image?.message}</p>
+            {errors.name && <p>{errors.name.message}</p>}
+          </div>
+
+          {/* Description */}
+          <div className="mt-2">
+            <label className="block font-medium">Description</label>
+            <textarea
+              {...register("description")}
+              className="bg-red-100 w-full"
+              placeholder="Event description"
+            />
+            {errors.description && <p>{errors.description.message}</p>}
+          </div>
+
+          {/* Time */}
+          <div className="mt-2">
+            <label className="block font-medium">Date</label>
+            <input
+              type="datetime-local"
+              {...register("time")}
+              className="bg-red-100"
+            />
+            {errors.time && <p>{errors.time.message}</p>}
+          </div>
+
+          {/* Image Upload */}
+          <ImageUpload onSelectFile={setSelectedFile} />
+
+          {/* Location Picker */}
+          <EventLocationPicker onChange={setLocation} />
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="bg-red-400 text-white px-4 py-2 mt-4 rounded hover:bg-red-600"
+          >
+            {isSubmitting ? "Creating..." : "Create Event"}
+          </button>
+        </form>
+
+        {msg && <p role="alert">{msg}</p>}
+        {err && <p role="alert">{err}</p>}
       </div>
-            
-      <button type="submit" disabled={isSubmitting} className="bg-red-400 text-white px-4 py-2 mt-4 rounded hover:bg-red-600">
-        {isSubmitting ? "Creating event.." : "Create Event"}</button>
-    </form>
-    {message && <p role="alert">{message}</p>}
-    {errorMessage && <p role="alert">{errorMessage}</p>}
     </div>
-    </div>
-    
   );
 }
-
-export default AddEvent;

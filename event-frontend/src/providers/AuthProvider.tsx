@@ -1,5 +1,5 @@
 import {  useState, useEffect, type ReactNode } from "react";
-import { AuthContext } from "./AuthContext";
+import { AuthContext } from "../hooks/AuthContext";
 
 interface User {
   token: string;

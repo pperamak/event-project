@@ -3,7 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing";
 
-import { CREATE_EVENT, GET_SIGNATURE } from "../../queries";
+import { CREATE_EVENT, GET_SIGNATURE } from "../../queries/queries";
 import AddEvent from "../AddEvent";
 
 // Must match the value used in AddEvent.tsx
