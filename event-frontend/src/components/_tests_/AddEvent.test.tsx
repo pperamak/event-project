@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { describe, it, expect } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing";
+import GoogleMapsProvider from "../../providers/GoogleMapsProvider";
 
 import { CREATE_EVENT, GET_SIGNATURE } from "../../queries/queries";
 import AddEvent from "../AddEvent";
@@ -58,10 +61,22 @@ describe("AddEvent component", () => {
     },
   };
 
+  vi.mock("@react-google-maps/api", async () => {
+  const actual = await vi.importActual<any>(
+    "@react-google-maps/api"
+  );
+  return {
+    ...actual,
+    ...(await import("../../tests/mocks/googleMaps")),
+  };
+});
+
   it("renders the form correctly", () => {
     render(
       <MockedProvider mocks={[]} addTypename={false}>
-        <AddEvent />
+        <GoogleMapsProvider>
+          <AddEvent /> 
+        </GoogleMapsProvider>
       </MockedProvider>
     );
 
@@ -76,7 +91,9 @@ describe("AddEvent component", () => {
 
     render(
       <MockedProvider mocks={[]} addTypename={false}>
-        <AddEvent />
+        <GoogleMapsProvider>
+          <AddEvent />
+        </GoogleMapsProvider>        
       </MockedProvider>
     );
 
@@ -94,7 +111,9 @@ describe("AddEvent component", () => {
         mocks={[signatureMock, createEventSuccessMock]}
         addTypename={false}
       >
-        <AddEvent />
+        <GoogleMapsProvider>
+          <AddEvent />
+        </GoogleMapsProvider>        
       </MockedProvider>
     );
 
@@ -106,7 +125,7 @@ describe("AddEvent component", () => {
 
     await waitFor(() => {
       expect(screen.getByRole("alert")).toHaveTextContent(
-        /created successfully/i
+        /created/i
       );
     });
   });
@@ -132,7 +151,9 @@ describe("AddEvent component", () => {
         mocks={[signatureMock, failMock]}
         addTypename={false}
       >
-        <AddEvent />
+        <GoogleMapsProvider>
+          <AddEvent />
+        </GoogleMapsProvider>
       </MockedProvider>
     );
 

@@ -123,8 +123,9 @@ export default function AddEvent() {
         <form onSubmit={handleSubmit(onSubmit)} className="mt-4">
           {/* Name */}
           <div>
-            <label className="block font-medium">Name</label>
+            <label htmlFor="name" className="block font-medium">Name</label>
             <input
+              id="name"
               type="text"
               {...register("name")}
               className="bg-red-100 w-full"
@@ -135,8 +136,9 @@ export default function AddEvent() {
 
           {/* Description */}
           <div className="mt-2">
-            <label className="block font-medium">Description</label>
+            <label htmlFor="description" className="block font-medium">Description</label>
             <textarea
+              id="description"
               {...register("description")}
               className="bg-red-100 w-full"
               placeholder="Event description"
@@ -146,8 +148,9 @@ export default function AddEvent() {
 
           {/* Time */}
           <div className="mt-2">
-            <label className="block font-medium">Date</label>
+            <label htmlFor="date" className="block font-medium">Date</label>
             <input
+              id="date"
               type="datetime-local"
               {...register("time")}
               className="bg-red-100"
