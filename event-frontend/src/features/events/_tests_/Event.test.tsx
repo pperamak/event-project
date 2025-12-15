@@ -5,8 +5,8 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
 import { MemoryRouter, Route, Routes } from "react-router";
 import Event from "../Event";
-import { GET_EVENT_BY_ID } from "../../queries/queries";
-import GoogleMapsProvider from "../../providers/GoogleMapsProvider";
+import { GET_EVENT_BY_ID } from "../../../queries/queries";
+import GoogleMapsProvider from "../../../providers/GoogleMapsProvider";
 
 // 🧩 Mock event data
 const mockEvent = {
@@ -53,7 +53,7 @@ vi.mock("@react-google-maps/api", async () => {
   );
   return {
     ...actual,
-    ...(await import("../../tests/mocks/googleMaps")),
+    ...(await import("../../../tests/mocks/googleMaps")),
   };
 });
 

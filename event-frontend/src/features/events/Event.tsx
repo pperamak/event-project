@@ -1,6 +1,6 @@
 import { useParams } from "react-router";
 import { useQuery } from "@apollo/client";
-import { GET_EVENT_BY_ID } from "../queries/queries";
+import { GET_EVENT_BY_ID } from "../../queries/queries";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 
 interface EventUser {

@@ -1,9 +1,9 @@
-import Register from './components/Register';
-import Login from './components/Login';
-import AddEvent from './components/AddEvent';
-import EventList from './components/EventList';
-import EventsLayout from './components/EventsLayout';
-import Event from './components/Event';
+import Register from './features/auth/Register';
+import Login from './features/auth/Login';
+import AddEvent from './features/events/AddEvent';
+import EventList from './features/events/EventList';
+import EventsLayout from './features/events/EventsLayout';
+import Event from './features/events/Event';
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';

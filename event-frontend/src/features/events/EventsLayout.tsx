@@ -1,5 +1,5 @@
 import { Outlet, Link } from "react-router";
-import LogOutButton from "./LogOutButton";
+import LogOutButton from "../../components/LogOutButton";
 
 export default function EventsLayout() {
   return (

@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useMutation, ApolloError } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LOGIN_USER } from "../queries/queries";
+import { LOGIN_USER } from "../../queries/queries";
 //import { useNavigate } from "react-router";
-import { loginSchema, type LoginSchema } from "../validation/loginSchema";
-import { useAuth } from "../hooks/useAuth";
+import { loginSchema, type LoginSchema } from "../../validation/loginSchema";
+import { useAuth } from "../../hooks/useAuth";
 import { Link } from "react-router";
 
 interface LoginUserData {

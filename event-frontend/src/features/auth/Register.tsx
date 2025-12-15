@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
-import { CREATE_USER } from "../queries/queries";
+import { CREATE_USER } from "../../queries/queries";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema } from "../validation/registerSchema";
-import { type RegisterSchema } from "../validation/registerSchema";
+import { registerSchema } from "../../validation/registerSchema";
+import { type RegisterSchema } from "../../validation/registerSchema";
 import { ApolloError } from "@apollo/client";
 import { Link } from "react-router";
 

@@ -4,9 +4,9 @@ import { describe, it, expect } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing";
-import GoogleMapsProvider from "../../providers/GoogleMapsProvider";
+import GoogleMapsProvider from "../../../providers/GoogleMapsProvider";
 
-import { CREATE_EVENT, GET_SIGNATURE } from "../../queries/queries";
+import { CREATE_EVENT, GET_SIGNATURE } from "../../../queries/queries";
 import AddEvent from "../AddEvent";
 
 // Must match the value used in AddEvent.tsx
@@ -67,7 +67,7 @@ describe("AddEvent component", () => {
   );
   return {
     ...actual,
-    ...(await import("../../tests/mocks/googleMaps")),
+    ...(await import("../../../tests/mocks/googleMaps")),
   };
 });
 

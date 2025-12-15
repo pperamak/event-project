@@ -1,4 +1,4 @@
-import { GET_EVENTS } from "../queries/queries";
+import { GET_EVENTS } from "../../queries/queries";
 import { useQuery } from "@apollo/client";
 import { Link } from "react-router";
 

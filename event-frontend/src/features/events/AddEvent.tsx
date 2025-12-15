@@ -4,11 +4,11 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { CREATE_EVENT, GET_SIGNATURE } from "../queries/queries";
-import { eventFormSchema } from "../validation/eventFormSchema";
-import type { EventFormSchema } from "../validation/eventFormSchema";
+import { CREATE_EVENT, GET_SIGNATURE } from "../../queries/queries";
+import { eventFormSchema } from "../../validation/eventFormSchema";
+import type { EventFormSchema } from "../../validation/eventFormSchema";
 
-import ImageUpload from "./ImageUpload";
+import ImageUpload from "../../components/ImageUpload";
 import EventLocationPicker from "./EventLocationPicker";
 import type { LocationData } from "./EventLocationPicker";
 
