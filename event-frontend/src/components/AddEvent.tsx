@@ -16,6 +16,18 @@ interface CloudinaryUploadResult {
   secure_url: string;
 }
 
+type GetSignatureResponse = {
+  getCloudinarySignature: {
+    apiKey: string;
+    cloudName: string;
+    signature: string;
+    timestamp: number;
+  };
+};
+
+type GetSignatureVars = Record<string, never>;
+
+
 const DEFAULT_IMAGE =
   "https://res.cloudinary.com/dqm9cv8nj/image/upload/v1764240724/780-7801295_celebration-download-png-celebration-background_iezywq.jpg";
 
@@ -30,7 +42,7 @@ export default function AddEvent() {
     mode: "onBlur",
   });
 
-  const [getSignature] = useMutation(GET_SIGNATURE);
+  const [getSignature] = useMutation<GetSignatureResponse, GetSignatureVars>(GET_SIGNATURE);
   const [createEvent] = useMutation(CREATE_EVENT);
 
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
