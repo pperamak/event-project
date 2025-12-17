@@ -24,6 +24,14 @@ export const typeDefs=gql`
     address: String
   }
 
+  type DiscussionMessage {
+  id: ID!
+  content: String!
+  createdAt: String!
+  user: User!
+}
+
+
   type CloudinarySignature {
     signature: String!
     timestamp: Int!
@@ -36,6 +44,7 @@ export const typeDefs=gql`
     me: User
     allEvents: [Event!]!
     findEvent(id: ID!): Event
+    eventMessages(eventId: ID!): [DiscussionMessage!]!
   }
   
   
@@ -60,6 +69,8 @@ export const typeDefs=gql`
     createEvent(
       input: CreateEventInput!
     ): Event!
+
+    addMessage(eventId: ID!, content: String!): DiscussionMessage!
 
     getCloudinarySignature: CloudinarySignature!
 

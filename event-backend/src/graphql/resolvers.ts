@@ -1,4 +1,4 @@
-import { User, Event }  from '../models/index.js';
+import { User, Event, DiscussionMessage }  from '../models/index.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { SECRET } from '../util/config.js';
@@ -10,6 +10,7 @@ import { EventArgs } from '../types/eventArgs.type.js';
 import { createEventInputSchema } from '../schemas/event.input.schema.js';
 import cloudinary from '../util/cloudinary.js';
 import { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } from '../util/config.js';
+import { addMessageSchema, AddMessageInput } from '../schemas/addMessage.schema.js';
 //import { eventToResponseFormat } from '../util/eventToResponse.js';
 //import { EventAttributes } from '../types/eventAttributes.type.js';
 
@@ -67,11 +68,21 @@ const resolvers = {
         ... data,
         time: data.time instanceof Date ? data.time.toISOString() : String(data.time)
       };
+    },
+
+    eventMessages: async (_root: unknown, args: { eventId: string }) =>{
+      const messages = await DiscussionMessage.findAll({
+        where: { eventId: args.eventId},
+        order: [["createdAt", "ASC"]],
+        });
+      return messages.map((message) => message.toJSON());
     }
+
   },
   Mutation: {
     createUser: async (_root: unknown, args: CreateUserArgs) =>{
       return handleSequelizeErrors(async () =>{
+        //safeParse args?
         const { name, email, password } =args;
         const saltRounds = 10;
         const passwordHash = await bcrypt.hash(password, saltRounds);
@@ -177,6 +188,47 @@ const resolvers = {
         };
   });
     },
+
+    addMessage: async (_root: unknown, args: AddMessageInput, context: MyContext) => {
+
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const parsed = addMessageSchema.safeParse(args);
+      if (!parsed.success) {
+        throw new GraphQLError("Invalid input", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            errors: parsed.error.issues, // forward zod details
+          },
+        });
+      }
+
+      const event = await Event.findByPk(args.eventId);
+      if (!event) {
+        throw new GraphQLError("Event not found");
+      } 
+
+      const { eventId, content } = args;
+      const userId = context.currentUser.id;
+
+      return handleSequelizeErrors(async () =>{
+        const savedMessage = await DiscussionMessage.create({
+          content,
+          userId,
+          eventId
+        });
+
+        return {
+          ...savedMessage,
+          user: context.currentUser
+        };
+      });
+    },
+
       getCloudinarySignature: () => {
       const timestamp = Math.round(new Date().getTime() / 1000);
 
