@@ -3,7 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing";
 import { AuthProvider } from "../../providers/AuthProvider";
-import { CREATE_USER, LOGIN_USER } from "../../queries/queries";
+import { CREATE_USER, LOGIN_USER } from "../../queries/mutations";
 import Register from "../../features/auth/Register";
 import Login from "../../features/auth/Login";
 import { MemoryRouter } from "react-router";

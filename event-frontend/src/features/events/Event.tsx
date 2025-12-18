@@ -27,12 +27,14 @@ interface GetEventData {
 
 const Event = () =>{
   
+  const DEFAULT_IMAGE_URL = "https://res.cloudinary.com/dqm9cv8nj/image/upload/v1764240724/780-7801295_celebration-download-png-celebration-background_iezywq.jpg";
+
   const { id } = useParams<{ id: string }>();
   const { data, loading, error } = useQuery<GetEventData>(GET_EVENT_BY_ID, {
     variables: { id: id },
   });
 
-  const DEFAULT_IMAGE_URL = "https://res.cloudinary.com/dqm9cv8nj/image/upload/v1764240724/780-7801295_celebration-download-png-celebration-background_iezywq.jpg";
+  
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;

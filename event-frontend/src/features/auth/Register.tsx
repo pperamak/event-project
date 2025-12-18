@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
-import { CREATE_USER } from "../../queries/queries";
+import { CREATE_USER } from "../../queries/mutations";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "../../validation/registerSchema";
