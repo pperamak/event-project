@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { describe, it, expect } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
 import Register from "../Register";
-import { CREATE_USER } from "../../../queries/queries";
+import { CREATE_USER } from "../../../queries/mutations";
 import { MemoryRouter } from "react-router";
 
 describe("Register component", () => {
