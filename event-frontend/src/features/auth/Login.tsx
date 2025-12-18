@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, ApolloError } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LOGIN_USER } from "../../queries/mutations";
+import { LOGIN_USER } from "../../graphql/mutations";
 //import { useNavigate } from "react-router";
 import { loginSchema, type LoginSchema } from "../../validation/loginSchema";
 import { useAuth } from "../../hooks/useAuth";

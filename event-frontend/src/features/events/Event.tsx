@@ -1,7 +1,8 @@
 import { useParams } from "react-router";
 import { useQuery } from "@apollo/client";
-import { GET_EVENT_BY_ID } from "../../queries/queries";
+import { GET_EVENT_BY_ID } from "../../graphql/queries";
 import { GoogleMap, Marker } from "@react-google-maps/api";
+import EventDiscussion from "./EventDiscussion";
 
 interface EventUser {
   id: string;
@@ -65,7 +66,7 @@ const Event = () =>{
       >
         Open in Google Maps
       </a>
-
+      <EventDiscussion eventId={event.id} />
     </div>
     </div>
   );

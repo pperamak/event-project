@@ -11,6 +11,7 @@ import { createEventInputSchema } from '../schemas/event.input.schema.js';
 import cloudinary from '../util/cloudinary.js';
 import { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } from '../util/config.js';
 import { addMessageSchema, AddMessageInput } from '../schemas/addMessage.schema.js';
+import { DateTime } from './dateScalar.js';
 //import { eventToResponseFormat } from '../util/eventToResponse.js';
 //import { EventAttributes } from '../types/eventAttributes.type.js';
 
@@ -29,6 +30,8 @@ interface LoginArgs {
 
 
 const resolvers = {
+  DateTime,
+
   DiscussionMessage: {
   user: async (message: DiscussionMessage) => {
     return await User.findByPk(message.userId);
@@ -87,7 +90,8 @@ const resolvers = {
         where: { eventId: args.eventId},
         order: [["createdAt", "ASC"]],
         });
-      return messages.map((message) => message.toJSON());
+      return messages.map(m => (m.toJSON()        
+      ));
     }
 
   },

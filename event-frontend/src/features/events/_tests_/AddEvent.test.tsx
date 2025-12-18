@@ -6,7 +6,7 @@ import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing";
 import GoogleMapsProvider from "../../../providers/GoogleMapsProvider";
 
-import { CREATE_EVENT, GET_SIGNATURE } from "../../../queries/mutations";
+import { CREATE_EVENT, GET_SIGNATURE } from "../../../graphql/mutations";
 import AddEvent from "../AddEvent";
 
 // Must match the value used in AddEvent.tsx

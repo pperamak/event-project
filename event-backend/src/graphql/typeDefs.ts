@@ -1,6 +1,8 @@
 import { gql } from 'graphql-tag';
 
 export const typeDefs=gql`
+  scalar DateTime
+
   type User {
     name: String!
     email: String!
@@ -27,7 +29,7 @@ export const typeDefs=gql`
   type DiscussionMessage {
   id: ID!
   content: String!
-  createdAt: String!
+  createdAt: DateTime!
   user: User!
 }
 

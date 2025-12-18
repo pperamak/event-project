@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { CREATE_EVENT, GET_SIGNATURE } from "../../queries/mutations";
+import { CREATE_EVENT, GET_SIGNATURE } from "../../graphql/mutations";
 import { eventFormSchema } from "../../validation/eventFormSchema";
 import type { EventFormSchema } from "../../validation/eventFormSchema";
 

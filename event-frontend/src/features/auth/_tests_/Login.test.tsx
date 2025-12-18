@@ -3,7 +3,7 @@ import { describe, it, expect } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
 import Login from "../Login";
-import { LOGIN_USER } from "../../../queries/mutations";
+import { LOGIN_USER } from "../../../graphql/mutations";
 import { AuthProvider } from "../../../providers/AuthProvider";
 import { MemoryRouter } from "react-router";
 

@@ -71,3 +71,17 @@ export const GET_SIGNATURE = gql`
     }
   }
 `;
+
+export const ADD_MESSAGE = gql`
+  mutation AddMessage($eventId: ID!, $content: String!) {
+    addMessage(eventId: $eventId, content: $content) {
+      id
+      content
+      createdAt
+      user {
+        id
+        name
+      }
+    }
+  }
+`;

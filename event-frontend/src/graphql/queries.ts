@@ -43,5 +43,17 @@ export const GET_EVENT_BY_ID = gql`
 }
 `;
 
-
+export const GET_EVENT_MESSAGES = gql`
+  query EventMessages($eventId: ID!) {
+    eventMessages(eventId: $eventId) {
+      id
+      content
+      createdAt
+      user {
+        id
+        name
+      }
+    }
+  }
+`;
 
