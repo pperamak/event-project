@@ -29,6 +29,18 @@ interface LoginArgs {
 
 
 const resolvers = {
+  DiscussionMessage: {
+  user: async (message: DiscussionMessage) => {
+    return await User.findByPk(message.userId);
+  },
+
+  /*
+  event: async (message: DiscussionMessage) => {
+    return await Event.findByPk(message.eventId);
+  },
+  */
+},
+
   Query: {
     allUsers: async () => {
      const users = await User.findAll();
@@ -222,10 +234,9 @@ const resolvers = {
           eventId
         });
 
-        return {
-          ...savedMessage,
-          user: context.currentUser
-        };
+        return savedMessage.toJSON();
+          
+        
       });
     },
 
