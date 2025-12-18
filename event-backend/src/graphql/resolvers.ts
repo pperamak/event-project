@@ -5,7 +5,7 @@ import { SECRET } from '../util/config.js';
 //import { UserAttributes } from '../types/userAttributes.type.js';
 import { GraphQLError } from 'graphql';
 import { handleSequelizeErrors } from '../util/handleSequelizeErrors.js';
-import { ContextUser, MyContext } from '../types/context.type.js';
+import {  MyContext } from '../types/context.type.js';
 import { EventArgs } from '../types/eventArgs.type.js';
 import { createEventInputSchema } from '../schemas/event.input.schema.js';
 import cloudinary from '../util/cloudinary.js';
@@ -64,7 +64,7 @@ const resolvers = {
         raw: false,
         nest: true
       });
-      return events.map(e => ({...e.toJSON(), time: e.time instanceof Date ? e.time.toISOString() : String(e.time)}));
+      return events.map(e => (e.toJSON()));
       
     },
     findEvent: async (_root: unknown, args: { id: string}) => {
@@ -78,11 +78,9 @@ const resolvers = {
       if (!event) {
         throw new Error(`Event with ID ${args.id} not found`);
       }
-      const data = event.toJSON();
-      return { 
-        ... data,
-        time: data.time instanceof Date ? data.time.toISOString() : String(data.time)
-      };
+      
+      return event.toJSON();
+
     },
 
     eventMessages: async (_root: unknown, args: { eventId: string }) =>{
@@ -160,18 +158,7 @@ const resolvers = {
 
       const userId = context.currentUser.id;
 
-      return handleSequelizeErrors<{
-        id?: number;
-        name: string;
-        time: string;
-        description: string;
-        image: string;
-        latitude: number;
-        longitude: number;
-        address: string;
-        userId: number;
-        user: ContextUser | null;
-      }>(async () => {
+      return handleSequelizeErrors(async () => {
         const newEvent = await Event.create({
           name,
           time,
@@ -183,6 +170,7 @@ const resolvers = {
           address
         });
 
+        /*
         const data = newEvent.toJSON.bind(newEvent)() as {
           id: number;
           name: string;
@@ -194,14 +182,11 @@ const resolvers = {
           longitude: number;
           address: string;
         };
+        */
+       
         
         
-        
-        return {
-        ...data,
-        time: data.time instanceof Date ? data.time.toISOString() : String(data.time),
-        user: context.currentUser
-        };
+        return {...newEvent.toJSON(), user: context.currentUser};
   });
     },
 

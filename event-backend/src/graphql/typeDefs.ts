@@ -17,7 +17,7 @@ export const typeDefs=gql`
   type Event{
     id: ID!
     name: String!
-    time: String!
+    time: DateTime!
     description: String!
     user: User!
     image: String
