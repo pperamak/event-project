@@ -35,7 +35,7 @@ afterAll(async () => {
 describe("Event resolvers", () => {
   test("createEvent mutation creates an event for the logged in user", async () => {
     const mutation = `
-      mutation CreateEvent($name: String!, $time: String!, $description: String!) {
+      mutation CreateEvent($name: String!, $time: DateTime!, $description: String!) {
         createEvent(input: {name: $name, time: $time, description: $description}) {
           id
           name
@@ -64,6 +64,9 @@ describe("Event resolvers", () => {
 
     //console.log("Hökä response: ", response);
     //expect(response.status).toBe(200);
+    if (response.body.errors) {
+      console.error(response.body.errors);
+    }
     const event = response.body.data.createEvent;
 
     expect(event.name).toBe(variables.name);
@@ -100,6 +103,9 @@ describe("Event resolvers", () => {
       .send({ query });
 
     //expect(response.status).toBe(200);
+    if (response.body.errors) {
+      console.error(response.body.errors);
+    }
     const events = response.body.data.allEvents;
     expect(events.length).toBeGreaterThan(0);
 
