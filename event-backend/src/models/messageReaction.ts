@@ -37,7 +37,7 @@ MessageReaction.init(
     {
       type:DataTypes.INTEGER,
       allowNull: false,
-      references: { model: "discussionMessage", key: "id"},
+      references: { model: "discussion_messages", key: "id"},
       field: "message_id"
     },
     userId:
