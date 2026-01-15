@@ -1,4 +1,4 @@
-import { User, Event, DiscussionMessage }  from '../models/index.js';
+import { User, Event, DiscussionMessage, MessageReaction }  from '../models/index.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { SECRET } from '../util/config.js';
@@ -12,6 +12,8 @@ import cloudinary from '../util/cloudinary.js';
 import { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } from '../util/config.js';
 import { addMessageSchema, AddMessageInput } from '../schemas/addMessage.schema.js';
 import { DateTime } from './dateScalar.js';
+import { ReactionType } from '../types/messageReaction.type.js';
+
 //import { eventToResponseFormat } from '../util/eventToResponse.js';
 //import { EventAttributes } from '../types/eventAttributes.type.js';
 
@@ -35,6 +37,24 @@ const resolvers = {
   DiscussionMessage: {
   user: async (message: DiscussionMessage) => {
     return await User.findByPk(message.userId);
+  },
+
+  reactions: async (message: DiscussionMessage) => {
+    return await MessageReaction.findAll({
+      where: { messageId: message.id },
+    });
+  },
+
+  upvotes: async (message: DiscussionMessage) => {
+    return await MessageReaction.count({
+      where: { messageId: message.id, type: "UP" },
+    });
+  },
+
+  downvotes: async (message: DiscussionMessage) => {
+    return await MessageReaction.count({
+      where: { messageId: message.id, type: "DOWN" },
+    });
   },
 
   /*
@@ -227,6 +247,52 @@ const resolvers = {
           
         
       });
+    },
+
+    reactToMessage: async (_root: unknown, args: { messageId: string; type: ReactionType }, context: MyContext) =>{
+      if (!context.currentUser) {
+    throw new GraphQLError("Not authenticated", {
+      extensions: { code: "UNAUTHENTICATED" },
+    });
+  }
+
+  const userId = context.currentUser.id;
+  const messageId = Number(args.messageId);
+
+  // 1️⃣ Ensure message exists
+  const message = await DiscussionMessage.findByPk(messageId);
+  if (!message) {
+    throw new GraphQLError("Message not found", {
+      extensions: { code: "BAD_USER_INPUT" },
+    });
+  }
+
+  return handleSequelizeErrors(async () => {
+    // 2️⃣ Check existing reaction
+    const existing = await MessageReaction.findOne({
+      where: { userId, messageId },
+    });
+
+    // 3️⃣ Toggle off (same reaction)
+    if (existing && existing.type === args.type) {
+      await existing.destroy();
+      return existing; // returning the removed reaction is fine
+    }
+
+    // 4️⃣ Update existing reaction
+    if (existing) {
+      existing.type = args.type;
+      await existing.save();
+      return existing;
+    }
+
+    // 5️⃣ Create new reaction
+    return await MessageReaction.create({
+      userId,
+      messageId,
+      type: args.type,
+    });
+  });
     },
 
       getCloudinarySignature: () => {

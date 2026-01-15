@@ -6,6 +6,7 @@ export const DateTime = new GraphQLScalarType({
     if (value instanceof Date) {
       return value.toISOString();
     }
+    if (typeof value === "string") return value; // already ISO
     throw new Error("DateTime must be a Date");
   },
   parseValue(value) {

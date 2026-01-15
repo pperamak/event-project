@@ -3,6 +3,11 @@ import { gql } from 'graphql-tag';
 export const typeDefs=gql`
   scalar DateTime
 
+  enum ReactionType {
+    UP
+    DOWN
+  }
+
   type User {
     name: String!
     email: String!
@@ -12,6 +17,13 @@ export const typeDefs=gql`
   type Token{
     value: String!
     user: User!
+  }
+
+  type MessageReaction{
+    id: ID!
+    type: ReactionType!
+    user: User!
+    message: DiscussionMessage!
   }
   
   type Event{
@@ -31,6 +43,9 @@ export const typeDefs=gql`
   content: String!
   createdAt: DateTime!
   user: User!
+  reactions: [MessageReaction!]!
+  upvotes: Int!
+  downvotes: Int!
 }
 
 
@@ -53,7 +68,7 @@ export const typeDefs=gql`
   input CreateEventInput {
     name: String!
     description: String!
-    time: String!
+    time: DateTime!
     image: String
     latitude: Float
     longitude: Float
@@ -73,6 +88,8 @@ export const typeDefs=gql`
     ): Event!
 
     addMessage(eventId: ID!, content: String!): DiscussionMessage!
+
+    reactToMessage(type: ReactionType!, messageId: ID!): MessageReaction!
 
     getCloudinarySignature: CloudinarySignature!
 
