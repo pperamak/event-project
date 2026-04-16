@@ -23,14 +23,22 @@ export const ReactionButtons = ({ message }: Props) => {
     <div className="flex gap-2">
       <button
         onClick={() => handleReact("UP")}
-        className={message.myReaction === "UP" ? "active" : ""}
+        className={`px-2 py-1 rounded ${
+    message.myReaction === "UP"
+      ? "bg-red-500 text-white"
+      : "bg-gray-200 text-gray-700"
+  }`}
       >
         👍 {message.upvotes}
       </button>
 
       <button
         onClick={() => handleReact("DOWN")}
-        className={message.myReaction === "DOWN" ? "active" : ""}
+        className={`px-2 py-1 rounded ${
+    message.myReaction === "DOWN"
+      ? "bg-red-500 text-white"
+      : "bg-gray-200 text-gray-700"
+  }`}
       >
         👎 {message.downvotes}
       </button>
