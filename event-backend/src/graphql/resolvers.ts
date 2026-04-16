@@ -13,6 +13,7 @@ import { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } from
 import { addMessageSchema, AddMessageInput } from '../schemas/addMessage.schema.js';
 import { DateTime } from './dateScalar.js';
 import { ReactionType } from '../types/messageReaction.type.js';
+import { isContext } from 'vm';
 
 //import { eventToResponseFormat } from '../util/eventToResponse.js';
 //import { EventAttributes } from '../types/eventAttributes.type.js';
@@ -56,6 +57,19 @@ const resolvers = {
       where: { messageId: message.id, type: "DOWN" },
     });
   },
+
+  myReaction: async (message: DiscussionMessage, _args: unknown, context: MyContext) =>{
+    const user = context.currentUser;
+    if (!user) return null;
+
+    const reaction = await MessageReaction.findOne({
+      where: {
+        messageId: message.id,
+        userId: user.id
+      }
+    });
+    return reaction ? reaction.type : null;
+  }
 
   /*
   event: async (message: DiscussionMessage) => {
@@ -105,6 +119,8 @@ const resolvers = {
 
     eventMessages: async (_root: unknown, args: { eventId: string }) =>{
       const messages = await DiscussionMessage.findAll({
+        //Coerce eventId to a number explicitly?zod valid?
+        //preload reactions? using include or batching (DataLoader)??
         where: { eventId: args.eventId},
         order: [["createdAt", "ASC"]],
         });
@@ -273,25 +289,47 @@ const resolvers = {
       where: { userId, messageId },
     });
 
+    let myReaction: ReactionType | null = null;
+
     // 3️⃣ Toggle off (same reaction)
     if (existing && existing.type === args.type) {
       await existing.destroy();
-      return existing; // returning the removed reaction is fine
+      myReaction = null;
+      
     }
 
     // 4️⃣ Update existing reaction
-    if (existing) {
+    else if (existing) {
       existing.type = args.type;
       await existing.save();
-      return existing;
+      myReaction = existing.type;
     }
 
     // 5️⃣ Create new reaction
-    return await MessageReaction.create({
-      userId,
-      messageId,
-      type: args.type,
+    else {
+      const created = await MessageReaction.create({
+        userId,
+        messageId,
+        type: args.type,
+      });
+      myReaction = created.type;
+    }
+
+    // counts
+    const upvotes = await MessageReaction.count({
+      where: { messageId, type: "UP" },
     });
+
+    const downvotes = await MessageReaction.count({
+      where: { messageId, type: "DOWN" },
+    });
+
+    return {
+      messageId,
+      upvotes,
+      downvotes,
+      myReaction,
+    };
   });
     },
 

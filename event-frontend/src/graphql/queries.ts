@@ -53,6 +53,10 @@ export const GET_EVENT_MESSAGES = gql`
         id
         name
       }
+      
+      upvotes
+      downvotes
+      myReaction
     }
   }
 `;

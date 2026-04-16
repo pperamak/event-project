@@ -46,7 +46,15 @@ export const typeDefs=gql`
   reactions: [MessageReaction!]!
   upvotes: Int!
   downvotes: Int!
+  myReaction: ReactionType
 }
+
+  type MessageReactionsPayload {
+    messageId: ID!
+    upvotes: Int!
+    downvotes: Int!
+    myReaction: ReactionType
+  }
 
 
   type CloudinarySignature {
@@ -89,7 +97,7 @@ export const typeDefs=gql`
 
     addMessage(eventId: ID!, content: String!): DiscussionMessage!
 
-    reactToMessage(type: ReactionType!, messageId: ID!): MessageReaction!
+    reactToMessage(type: ReactionType!, messageId: ID!): MessageReactionsPayload!
 
     getCloudinarySignature: CloudinarySignature!
 
