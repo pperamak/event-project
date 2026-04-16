@@ -85,3 +85,14 @@ export const ADD_MESSAGE = gql`
     }
   }
 `;
+
+export const REACT_TO_MESSAGE = gql`
+  mutation ReactToMessage($messageId: ID!, $type: ReactionType!) {
+  reactToMessage(messageId: $messageId, type: $type) {
+    messageId
+    upvotes
+    downvotes
+    myReaction
+  }
+}
+`;

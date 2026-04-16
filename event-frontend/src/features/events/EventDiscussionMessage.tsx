@@ -1,5 +1,6 @@
 import type { DiscussionMessage } from "../../validation/discussion.type";
 
+
 interface Props {
   message: DiscussionMessage;
 }
@@ -15,6 +16,7 @@ export default function EventDiscussionMessage({ message }: Props) {
       </div>
 
       <p className="mt-1">{message.content}</p>
+      
     </li>
   );
 }

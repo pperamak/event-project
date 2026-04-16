@@ -1,6 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { GET_EVENT_MESSAGES } from "../../graphql/queries";
 import type { DiscussionMessage } from "../../validation/discussion.type";
+import { ReactionButtons } from "./ReactionButtons";
 
 import EventDiscussionForm from "./EventDiscussionForm";
 import EventDiscussionMessage from "./EventDiscussionMessage";
@@ -30,7 +31,10 @@ export default function EventDiscussion({ eventId }: Props) {
     
       <ul className="space-y-3 mt-4">
         {messages.map((msg) => (
-          <EventDiscussionMessage key={msg.id} message={msg} />
+          <div key={msg.id}>
+          <EventDiscussionMessage  message={msg} />
+          <ReactionButtons message={msg}/>
+         </div>
         ))}
       </ul>
 

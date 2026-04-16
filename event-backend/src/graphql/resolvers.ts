@@ -13,7 +13,6 @@ import { CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_CLOUD_NAME } from
 import { addMessageSchema, AddMessageInput } from '../schemas/addMessage.schema.js';
 import { DateTime } from './dateScalar.js';
 import { ReactionType } from '../types/messageReaction.type.js';
-import { isContext } from 'vm';
 
 //import { eventToResponseFormat } from '../util/eventToResponse.js';
 //import { EventAttributes } from '../types/eventAttributes.type.js';
